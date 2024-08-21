@@ -162,6 +162,9 @@ export default
     singlePage:
       type: Boolean
       default: false
+    doublePage:
+      type: Boolean
+      default: false
     forwardDirection:
       validator: (val) -> val == 'right' or val == 'left'
       default: 'right'
@@ -373,7 +376,9 @@ export default
       @viewWidth = viewport.clientWidth
       @viewHeight = viewport.clientHeight
       @displayedPages =
-        if @viewWidth > @viewHeight and not @singlePage then 2 else 1
+        // ESS changes to allow for always double page view even in portrait mode
+        // if @viewWidth > @viewHeight and not @singlePage then 2 else 1
+        if (@viewWidth > @viewHeight and not @singlePage) or @doublePage then 2 else 1
       @currentPage &= ~1 if @displayedPages == 2
       @fixFirstPage()
       @minX = Infinity
