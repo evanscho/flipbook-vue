@@ -33,6 +33,7 @@ declare const component: Vue.DefineComponent<
     gloss?: number
     swipeMin?: number
     singlePage?: boolean
+    doublePage?: boolean
     forwardDirection?: 'left' | 'right'
     centering?: boolean
     startPage?: number
