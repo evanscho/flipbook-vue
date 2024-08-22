@@ -19,10 +19,12 @@
   "type": "module",
   "main": "dist/flipbook-vue.umd.js",
   "module": "dist/flipbook-vue.es.js",
+  "types": "types/flipbook.d.ts",
   "exports": {
     ".": {
       "import": "./dist/flipbook-vue.es.js",
-      "require": "./dist/flipbook-vue.umd.js"
+      "require": "./dist/flipbook-vue.umd.js",
+      "types": "./types/flipbook.d.ts"
     }
   },
   "devDependencies": {
@@ -33,6 +35,11 @@
   },
   "peerDependencies": {
     "vue": ">=3.4.38"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
   },
   "browserslist": [
     "> 0.25%",
