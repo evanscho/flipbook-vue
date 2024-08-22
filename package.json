@@ -33,7 +33,8 @@
     "postcss": "*",
     "autoprefixer": "*",
     "vite": "*",
-    "@vitejs/plugin-vue": "*"
+    "@vitejs/plugin-vue": "*",
+    "vite-plugin-css-injected-by-js": "*"
   },
   "peerDependencies": {
     "vue": ">=3.4.38"

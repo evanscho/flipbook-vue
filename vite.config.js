@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue';
 import autoprefixer from 'autoprefixer';
 import { name, version } from './package.json'
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
 const banner = `/*!
  * @license
@@ -15,6 +16,7 @@ const banner = `/*!
 export default defineConfig({
   plugins: [
     vue(),
+    cssInjectedByJsPlugin(),
   ],
   css: {
     postcss: {
