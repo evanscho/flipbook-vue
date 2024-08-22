@@ -306,11 +306,11 @@ export default {
       else return 'auto';
     },
     pageScale() {
-    const vw = this.viewWidth / this.displayedPages;
-    const xScale = vw / this.imageWidth;
-    const yScale = this.viewHeight / this.imageHeight;
-    const scale = xScale < yScale ? xScale : yScale;
-    return scale < 1 ? scale : 1;
+      const vw = this.viewWidth / this.displayedPages;
+      const xScale = vw / this.imageWidth;
+      const yScale = this.viewHeight / this.imageHeight;
+      const scale = xScale < yScale ? xScale : yScale;
+      return scale < 1 ? scale : 1;
     },
     pageWidth() {
       return Math.round(this.imageWidth * this.pageScale());
