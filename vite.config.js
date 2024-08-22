@@ -9,12 +9,13 @@ export default defineConfig({
   extensions: [
     '.js',
     '.vue',
+    '.css',
   ],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/Flipbook.vue'),
-      name: 'FlipbookVue',
-      fileName: (format) => `flipbook-vue.${format}.js`,
+      name: 'Flipbook',
+      fileName: (format) => `flipbook.${format}.js`,
     },
     rollupOptions: {
       external: ['vue', 'rematrix'],
