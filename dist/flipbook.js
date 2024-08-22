@@ -202,10 +202,10 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       return this.forwardDirection == "left" ? this.firstPage : this.secondPage;
     },
     showLeftPage() {
-      return this.pageUrl(this.leftPage);
+      return console.log(`showLeftPage with leftPage ${this.leftPage}`), this.pageUrl(this.leftPage);
     },
     showRightPage() {
-      return this.pageUrl(this.rightPage) && this.displayedPages == 2;
+      return console.log(`showRightPage with rightPage ${this.rightPage}`), this.pageUrl(this.rightPage) && this.displayedPages == 2;
     },
     cursor() {
       return this.activeCursor ? this.activeCursor : this.IE ? "auto" : this.clickToZoom && this.canZoomIn ? "zoom-in" : this.clickToZoom && this.canZoomOut ? "zoom-out" : this.dragToFlip ? "grab" : "auto";
@@ -303,11 +303,11 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       this.displayedPages === 1 && this.currentPage === 0 && this.pages.length && !this.pageUrl(0) && this.currentPage++;
     },
     pageUrl(t, i = !1) {
-      if (i && this.zoom > 1 && !this.zooming) {
+      if (console.log(`pageUrl of ${t} with hiRes ${i}`), i && this.zoom > 1 && !this.zooming) {
         const r = this.pagesHiRes[t];
         if (r) return r;
       }
-      return this.pages[t] || null;
+      return console.log(`this.pages[page] is ${this.pages[t]}`), this.pages[t] || null;
     },
     pageUrlLoading(t, i = !1) {
       console.log(`pageUrlLoading of ${t} with hiRes ${i}`);
@@ -667,7 +667,7 @@ function it(t, i, r, o, a, e) {
     ], 38)
   ]);
 }
-const D = /* @__PURE__ */ K(_, [["render", it], ["__scopeId", "data-v-1c3ff3e6"]]);
+const D = /* @__PURE__ */ K(_, [["render", it], ["__scopeId", "data-v-08936283"]]);
 window.Vue && window.Vue.component ? Vue.component("flipbook", D) : window.Flipbook = D;
 export {
   D as default

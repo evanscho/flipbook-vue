@@ -291,9 +291,11 @@ export default {
       return this.forwardDirection == 'left' ? this.firstPage : this.secondPage;
     },
     showLeftPage() {
+      console.log(`showLeftPage with leftPage ${this.leftPage}`);
       return this.pageUrl(this.leftPage);
     },
     showRightPage() {
+      console.log(`showRightPage with rightPage ${this.rightPage}`);
       return this.pageUrl(this.rightPage) && this.displayedPages == 2;
     },
     cursor() {
@@ -445,10 +447,12 @@ export default {
       }
     },
     pageUrl(page, hiRes = false) {
+      console.log(`pageUrl of ${page} with hiRes ${hiRes}`);
       if (hiRes && this.zoom > 1 && !this.zooming) {
         const url = this.pagesHiRes[page];
         if (url) return url;
       }
+      console.log(`this.pages[page] is ${this.pages[page]}`);
       return this.pages[page] || null;
     },
     pageUrlLoading(page, hiRes = false) {
