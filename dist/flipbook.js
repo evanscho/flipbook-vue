@@ -1,4 +1,4 @@
-import { identity as F, multiply as H, perspective as O, translate as U, translate3d as C, rotateY as A, toString as Y } from "rematrix";
+import { identity as R, multiply as H, perspective as O, translate as U, translate3d as C, rotateY as A, toString as Y } from "rematrix";
 import { openBlock as v, createElementBlock as M, renderSlot as B, normalizeProps as Z, guardReactiveProps as N, createElementVNode as p, normalizeClass as W, normalizeStyle as g, createCommentVNode as S, Fragment as G, renderList as q, withDirectives as V, vShow as j } from "vue";
 /*!
  * @license
@@ -8,7 +8,7 @@ import { openBlock as v, createElementBlock as M, renderSlot as B, normalizeProp
  */
 class x {
   constructor(i) {
-    i ? i.m ? this.m = [...i.m] : this.m = [...i] : this.m = F();
+    i ? i.m ? this.m = [...i.m] : this.m = [...i] : this.m = R();
   }
   clone() {
     return new x(this);
@@ -40,8 +40,8 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
   for (const [o, a] of i)
     r[o] = a;
   return r;
-}, X = (t) => t ** 2, Q = (t) => 1 - X(1 - t), k = function(i) {
-  return i < 0.5 ? X(i * 2) / 2 : 0.5 + Q((i - 0.5) * 2) / 2;
+}, E = (t) => t ** 2, Q = (t) => 1 - E(1 - t), k = function(i) {
+  return i < 0.5 ? E(i * 2) / 2 : 0.5 + Q((i - 0.5) * 2) / 2;
 }, _ = {
   name: "FlipBook",
   props: {
@@ -331,22 +331,22 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       let f = i < 0.5 ? i * 2 * Math.PI : (1 - (i - 0.5) * 2) * Math.PI;
       f === 0 && (f = 1e-9);
       const m = this.pageWidth / f;
-      let u = 0;
+      let d = 0;
       const P = f / this.nPolygons;
-      let d = P / 2 / Math.PI * 180;
+      let u = P / 2 / Math.PI * 180;
       const w = P / Math.PI * 180;
-      s && (d = -(f / Math.PI) * 180 + w / 2), t === "back" && (d = -d), this.minX = 1 / 0, this.maxX = -1 / 0;
+      s && (u = -(f / Math.PI) * 180 + w / 2), t === "back" && (u = -u), this.minX = 1 / 0, this.maxX = -1 / 0;
       const c = [];
       for (let l = 0; l < this.nPolygons; l += 1) {
-        const E = `${l / (this.nPolygons - 1) * 100}% 0px`, y = n.clone(), z = s ? f - u : u;
+        const F = `${l / (this.nPolygons - 1) * 100}% 0px`, y = n.clone(), z = s ? f - d : d;
         let b = Math.sin(z) * m;
         s && (b = this.pageWidth - b);
         let I = (1 - Math.cos(z)) * m;
-        t === "back" && (I = -I), y.translate3d(b, 0, I), y.rotateY(-d);
+        t === "back" && (I = -I), y.translate3d(b, 0, I), y.rotateY(-u);
         const L = y.transformX(0), T = y.transformX(a);
         this.maxX = Math.max(Math.max(L, T), this.maxX), this.minX = Math.min(Math.min(L, T), this.minX);
-        const R = this.computeLighting(h - d, w);
-        u += P, d += w, c.push([`${t}${l}`, o, R, E, y.toString(), Math.abs(Math.round(I))]);
+        const X = this.computeLighting(h - u, w);
+        d += P, u += w, c.push([`${t}${l}`, o, X, F, y.toString(), Math.abs(Math.round(I))]);
       }
       return c;
     },
@@ -422,6 +422,9 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
     didLoadImage(t) {
       console.log("didLoadImage"), this.imageWidth == null && (this.imageWidth = (t.target || t.path[0]).naturalWidth, this.imageHeight = (t.target || t.path[0]).naturalHeight, console.log(`about to preloadImages with this.imageWidth ${this.imageWidth}`), this.preloadImages()), this.imageLoadCallback && ++this.nImageLoad >= this.nImageLoadTrigger && (console.log("calling imageLoadCallback"), this.imageLoadCallback(), this.imageLoadCallback = null);
     },
+    imageFailedToLoad(t) {
+      console.error("Failed to load image", t);
+    },
     zoomIn(t = null) {
       this.canZoomIn && (this.zoomIndex += 1, this.zoomTo(this.zooms_[this.zoomIndex], t));
     },
@@ -436,13 +439,13 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
         o = i.pageX - c.left, a = i.pageY - c.top;
       } else
         o = r.clientWidth / 2, a = r.clientHeight / 2;
-      const e = this.zoom, s = t, n = r.scrollLeft, h = r.scrollTop, f = o + n, m = a + h, u = f / e * s - o, P = m / e * s - a, d = Date.now();
+      const e = this.zoom, s = t, n = r.scrollLeft, h = r.scrollTop, f = o + n, m = a + h, d = f / e * s - o, P = m / e * s - a, u = Date.now();
       this.zooming = !0, this.$emit("zoom-start", t);
       const w = () => {
         requestAnimationFrame(() => {
-          const c = Date.now() - d;
+          const c = Date.now() - u;
           let l = c / this.zoomDuration;
-          (l > 1 || this.IE) && (l = 1), l = k(l), this.zoom = e + (s - e) * l, this.scrollLeft = n + (u - n) * l, this.scrollTop = h + (P - h) * l, c < this.zoomDuration ? w() : (this.$emit("zoom-end", t), this.zooming = !1, this.zoom = t, this.scrollLeft = u, this.scrollTop = P);
+          (l > 1 || this.IE) && (l = 1), l = k(l), this.zoom = e + (s - e) * l, this.scrollLeft = n + (d - n) * l, this.scrollTop = h + (P - h) * l, c < this.zoomDuration ? w() : (this.$emit("zoom-end", t), this.zooming = !1, this.zoom = t, this.scrollLeft = d, this.scrollTop = P);
         });
       };
       w(), s > 1 && this.preloadImages(!0);
@@ -555,15 +558,15 @@ function it(t, i, r, o, a, e) {
         "drag-to-scroll": e.dragToScroll
       }]),
       style: g({ cursor: e.cursor == "grabbing" ? "grabbing" : "auto" }),
-      onTouchmove: i[7] || (i[7] = (...s) => e.onTouchMove && e.onTouchMove(...s)),
-      onPointermove: i[8] || (i[8] = (...s) => e.onPointerMove && e.onPointerMove(...s)),
-      onMousemove: i[9] || (i[9] = (...s) => e.onMouseMove && e.onMouseMove(...s)),
-      onTouchend: i[10] || (i[10] = (...s) => e.onTouchEnd && e.onTouchEnd(...s)),
-      onTouchcancel: i[11] || (i[11] = (...s) => e.onTouchEnd && e.onTouchEnd(...s)),
-      onPointerup: i[12] || (i[12] = (...s) => e.onPointerUp && e.onPointerUp(...s)),
-      onPointercancel: i[13] || (i[13] = (...s) => e.onPointerUp && e.onPointerUp(...s)),
-      onMouseup: i[14] || (i[14] = (...s) => e.onMouseUp && e.onMouseUp(...s)),
-      onWheel: i[15] || (i[15] = (...s) => e.onWheel && e.onWheel(...s))
+      onTouchmove: i[9] || (i[9] = (...s) => e.onTouchMove && e.onTouchMove(...s)),
+      onPointermove: i[10] || (i[10] = (...s) => e.onPointerMove && e.onPointerMove(...s)),
+      onMousemove: i[11] || (i[11] = (...s) => e.onMouseMove && e.onMouseMove(...s)),
+      onTouchend: i[12] || (i[12] = (...s) => e.onTouchEnd && e.onTouchEnd(...s)),
+      onTouchcancel: i[13] || (i[13] = (...s) => e.onTouchEnd && e.onTouchEnd(...s)),
+      onPointerup: i[14] || (i[14] = (...s) => e.onPointerUp && e.onPointerUp(...s)),
+      onPointercancel: i[15] || (i[15] = (...s) => e.onPointerUp && e.onPointerUp(...s)),
+      onMouseup: i[16] || (i[16] = (...s) => e.onMouseUp && e.onMouseUp(...s)),
+      onWheel: i[17] || (i[17] = (...s) => e.onWheel && e.onWheel(...s))
     }, [
       p("div", {
         class: "flipbook-container",
@@ -592,7 +595,8 @@ function it(t, i, r, o, a, e) {
               top: e.yMargin + "px"
             }),
             src: e.pageUrlLoading(e.leftPage, !0),
-            onLoad: i[2] || (i[2] = (s) => e.didLoadImage(s))
+            onLoad: i[2] || (i[2] = (s) => e.didLoadImage(s)),
+            onError: i[3] || (i[3] = (s) => e.imageFailedToLoad(s))
           }, null, 44, $)) : S("", !0),
           e.showRightPage ? (v(), M("img", {
             key: 1,
@@ -604,12 +608,13 @@ function it(t, i, r, o, a, e) {
               top: e.yMargin + "px"
             }),
             src: e.pageUrlLoading(e.rightPage, !0),
-            onLoad: i[3] || (i[3] = (s) => e.didLoadImage(s))
+            onLoad: i[4] || (i[4] = (s) => e.didLoadImage(s)),
+            onError: i[5] || (i[5] = (s) => e.imageFailedToLoad(s))
           }, null, 44, tt)) : S("", !0),
           p("div", {
             style: g({ opacity: a.flip.opacity })
           }, [
-            (v(!0), M(G, null, q(e.polygonArray, ([s, n, h, f, m, u]) => (v(), M("div", {
+            (v(!0), M(G, null, q(e.polygonArray, ([s, n, h, f, m, d]) => (v(), M("div", {
               key: s,
               class: W(["polygon", { blank: !n }]),
               style: g({
@@ -619,7 +624,7 @@ function it(t, i, r, o, a, e) {
                 width: e.polygonWidth,
                 height: e.polygonHeight,
                 transform: m,
-                zIndex: u
+                zIndex: d
               })
             }, [
               V(p("div", {
@@ -639,16 +644,16 @@ function it(t, i, r, o, a, e) {
               height: e.pageHeight + "px",
               cursor: e.cursor
             }),
-            onTouchstart: i[4] || (i[4] = (...s) => e.onTouchStart && e.onTouchStart(...s)),
-            onPointerdown: i[5] || (i[5] = (...s) => e.onPointerDown && e.onPointerDown(...s)),
-            onMousedown: i[6] || (i[6] = (...s) => e.onMouseDown && e.onMouseDown(...s))
+            onTouchstart: i[6] || (i[6] = (...s) => e.onTouchStart && e.onTouchStart(...s)),
+            onPointerdown: i[7] || (i[7] = (...s) => e.onPointerDown && e.onPointerDown(...s)),
+            onMousedown: i[8] || (i[8] = (...s) => e.onMouseDown && e.onMouseDown(...s))
           }, null, 36)
         ], 4)
       ], 4)
     ], 38)
   ]);
 }
-const D = /* @__PURE__ */ K(_, [["render", it], ["__scopeId", "data-v-7aba66dd"]]);
+const D = /* @__PURE__ */ K(_, [["render", it], ["__scopeId", "data-v-d8ab6a16"]]);
 window.Vue && window.Vue.component ? Vue.component("flipbook", D) : window.Flipbook = D;
 export {
   D as default

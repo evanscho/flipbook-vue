@@ -47,6 +47,7 @@
             }"
             :src="pageUrlLoading(leftPage, true)"
             @load="didLoadImage($event)"
+            @error="imageFailedToLoad($event)"
           />
           <img
             v-if="showRightPage"
@@ -59,6 +60,7 @@
             }"
             :src="pageUrlLoading(rightPage, true)"
             @load="didLoadImage($event)"
+            @error="imageFailedToLoad($event)"
           />
 
           <div :style="{ opacity: flip.opacity }">
@@ -727,6 +729,10 @@ export default {
         this.imageLoadCallback();
         this.imageLoadCallback = null;
       }
+    },
+
+    imageFailedToLoad(ev) {
+      console.error('Failed to load image', ev);
     },
 
     zoomIn(zoomAt = null) {
