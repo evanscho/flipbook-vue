@@ -1,4 +1,4 @@
-import { identity as F, multiply as H, perspective as O, translate as C, translate3d as U, rotateY as A, toString as Y } from "rematrix";
+import { identity as F, multiply as H, perspective as O, translate as U, translate3d as C, rotateY as A, toString as Y } from "rematrix";
 import { openBlock as v, createElementBlock as M, renderSlot as B, normalizeProps as Z, guardReactiveProps as N, createElementVNode as p, normalizeClass as W, normalizeStyle as g, createCommentVNode as S, Fragment as G, renderList as q, withDirectives as V, vShow as j } from "vue";
 /*!
  * @license
@@ -23,10 +23,10 @@ class x {
     return (i * this.m[0] + this.m[12]) / (i * this.m[3] + this.m[15]);
   }
   translate(i, r) {
-    this.multiply(C(i, r));
+    this.multiply(U(i, r));
   }
   translate3d(i, r, o) {
-    this.multiply(U(i, r, o));
+    this.multiply(C(i, r, o));
   }
   rotateY(i) {
     this.multiply(A(i));
@@ -310,8 +310,9 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       return this.pages[t] || null;
     },
     pageUrlLoading(t, i = !1) {
+      console.log(`pageUrlLoading of ${t} with hiRes ${i}`);
       const r = this.pageUrl(t, i);
-      return i && this.zoom > 1 && !this.zooming ? r : r && this.loadImage(r);
+      return console.log(`url is ${r}`), i && this.zoom > 1 && !this.zooming ? r : r && this.loadImage(r);
     },
     flipLeft() {
       this.canFlipLeft && this.flipStart("left", !0);
@@ -336,19 +337,19 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       let u = 0;
       const P = f / this.nPolygons;
       let d = P / 2 / Math.PI * 180;
-      const y = P / Math.PI * 180;
-      s && (d = -(f / Math.PI) * 180 + y / 2), t === "back" && (d = -d), this.minX = 1 / 0, this.maxX = -1 / 0;
+      const w = P / Math.PI * 180;
+      s && (d = -(f / Math.PI) * 180 + w / 2), t === "back" && (d = -d), this.minX = 1 / 0, this.maxX = -1 / 0;
       const c = [];
       for (let l = 0; l < this.nPolygons; l++) {
-        const E = `${l / (this.nPolygons - 1) * 100}% 0px`, w = n.clone(), z = s ? f - u : u;
-        let I = Math.sin(z) * m;
-        s && (I = this.pageWidth - I);
-        let b = (1 - Math.cos(z)) * m;
-        t === "back" && (b = -b), w.translate3d(I, 0, b), w.rotateY(-d);
-        const L = w.transformX(0), T = w.transformX(a);
+        const E = `${l / (this.nPolygons - 1) * 100}% 0px`, y = n.clone(), z = s ? f - u : u;
+        let b = Math.sin(z) * m;
+        s && (b = this.pageWidth - b);
+        let I = (1 - Math.cos(z)) * m;
+        t === "back" && (I = -I), y.translate3d(b, 0, I), y.rotateY(-d);
+        const L = y.transformX(0), T = y.transformX(a);
         this.maxX = Math.max(Math.max(L, T), this.maxX), this.minX = Math.min(Math.min(L, T), this.minX);
-        const R = this.computeLighting(h - d, y);
-        u += P, d += y, c.push([`${t}${l}`, o, R, E, w.toString(), Math.abs(Math.round(b))]);
+        const R = this.computeLighting(h - d, w);
+        u += P, d += w, c.push([`${t}${l}`, o, R, E, y.toString(), Math.abs(Math.round(I))]);
       }
       return c;
     },
@@ -442,14 +443,14 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
         o = r.clientWidth / 2, a = r.clientHeight / 2;
       const e = this.zoom, s = t, n = r.scrollLeft, h = r.scrollTop, f = o + n, m = a + h, u = f / e * s - o, P = m / e * s - a, d = Date.now();
       this.zooming = !0, this.$emit("zoom-start", t);
-      const y = () => {
+      const w = () => {
         requestAnimationFrame(() => {
           const c = Date.now() - d;
           let l = c / this.zoomDuration;
-          (l > 1 || this.IE) && (l = 1), l = k(l), this.zoom = e + (s - e) * l, this.scrollLeft = n + (u - n) * l, this.scrollTop = h + (P - h) * l, c < this.zoomDuration ? y() : (this.$emit("zoom-end", t), this.zooming = !1, this.zoom = t, this.scrollLeft = u, this.scrollTop = P);
+          (l > 1 || this.IE) && (l = 1), l = k(l), this.zoom = e + (s - e) * l, this.scrollLeft = n + (u - n) * l, this.scrollTop = h + (P - h) * l, c < this.zoomDuration ? w() : (this.$emit("zoom-end", t), this.zooming = !1, this.zoom = t, this.scrollLeft = u, this.scrollTop = P);
         });
       };
-      y(), s > 1 && this.preloadImages(!0);
+      w(), s > 1 && this.preloadImages(!0);
     },
     zoomAt(t) {
       this.zoomIndex = (this.zoomIndex + 1) % this.zooms_.length, this.zoomTo(this.zooms_[this.zoomIndex], t);
@@ -516,6 +517,7 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       this.wheel === "scroll" && this.zoom > 1 && this.dragToScroll && (this.scrollLeft = this.$refs.viewport.scrollLeft + t.deltaX, this.scrollTop = this.$refs.viewport.scrollTop + t.deltaY, t.cancelable && t.preventDefault()), this.wheel === "zoom" && (t.deltaY >= 100 ? (this.zoomOut(t), t.cancelable && t.preventDefault()) : t.deltaY <= -100 && (this.zoomIn(t), t.cancelable && t.preventDefault()));
     },
     preloadImages(t = !1) {
+      console.log(`preloadImages with hiRes ${t}`), console.log("this.currentPage", this.currentPage);
       for (let i = this.currentPage - 3; i <= this.currentPage + 3; i++)
         this.pageUrlLoading(i);
       if (t)
@@ -665,7 +667,7 @@ function it(t, i, r, o, a, e) {
     ], 38)
   ]);
 }
-const D = /* @__PURE__ */ K(_, [["render", it], ["__scopeId", "data-v-fbaede08"]]);
+const D = /* @__PURE__ */ K(_, [["render", it], ["__scopeId", "data-v-1c3ff3e6"]]);
 window.Vue && window.Vue.component ? Vue.component("flipbook", D) : window.Flipbook = D;
 export {
   D as default

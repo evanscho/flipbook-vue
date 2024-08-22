@@ -452,7 +452,9 @@ export default {
       return this.pages[page] || null;
     },
     pageUrlLoading(page, hiRes = false) {
+      console.log(`pageUrlLoading of ${page} with hiRes ${hiRes}`);
       const url = this.pageUrl(page, hiRes);
+      console.log(`url is ${url}`);
       if (hiRes && this.zoom > 1 && !this.zooming) return url;
       return url && this.loadImage(url);
     },
@@ -968,6 +970,8 @@ export default {
     },
 
     preloadImages(hiRes = false) {
+      console.log(`preloadImages with hiRes ${hiRes}`);
+      console.log('this.currentPage', this.currentPage);
       for (let i = this.currentPage - 3; i <= this.currentPage + 3; i++) {
         this.pageUrlLoading(i); // This preloads image
       }
