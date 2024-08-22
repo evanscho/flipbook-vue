@@ -313,54 +313,54 @@ export default {
       return scale < 1 ? scale : 1;
     },
     pageWidth() {
-      return Math.round(this.imageWidth * this.pageScale());
+      return Math.round(this.imageWidth * this.pageScale);
     },
     pageHeight() {
-      return Math.round(this.imageHeight * this.pageScale());
+      return Math.round(this.imageHeight * this.pageScale);
     },
     xMargin() {
-      return (this.viewWidth - this.pageWidth() * this.displayedPages) / 2;
+      return (this.viewWidth - this.pageWidth * this.displayedPages) / 2;
     },
     yMargin() {
-      return (this.viewHeight - this.pageHeight()) / 2;
+      return (this.viewHeight - this.pageHeight) / 2;
     },
     polygonWidth() {
-      let w = this.pageWidth() / this.nPolygons;
+      let w = this.pageWidth / this.nPolygons;
       w = Math.ceil(w + 1 / this.zoom);
       return `${w}px`;
     },
     polygonHeight() {
-      return `${this.pageHeight()}px`;
+      return `${this.pageHeight}px`;
     },
     polygonBgSize() {
-      return `${this.pageWidth()}px ${this.pageHeight()}px`;
+      return `${this.pageWidth}px ${this.pageHeight}px`;
     },
     polygonArray() {
       return this.makePolygonArray('front').concat(this.makePolygonArray('back'));
     },
     boundingLeft() {
       if (this.displayedPages === 1) {
-        return this.xMargin();
+        return this.xMargin;
       } else {
         const x = this.pageUrl(this.leftPage)
-          ? this.xMargin()
+          ? this.xMargin
           : this.viewWidth / 2;
         return x < this.minX ? x : this.minX;
       }
     },
     boundingRight() {
       if (this.displayedPages === 1) {
-        return this.viewWidth - this.xMargin();
+        return this.viewWidth - this.xMargin;
       } else {
         const x = this.pageUrl(this.rightPage)
-          ? this.viewWidth - this.xMargin()
+          ? this.viewWidth - this.xMargin
           : this.viewWidth / 2;
         return x > this.maxX ? x : this.maxX;
       }
     },
     centerOffset() {
       const retval = this.centering
-        ? Math.round(this.viewWidth / 2 - (this.boundingLeft() + this.boundingRight()) / 2)
+        ? Math.round(this.viewWidth / 2 - (this.boundingLeft + this.boundingRight) / 2)
         : 0;
       if (this.currentCenterOffset == null && this.imageWidth != null) {
         this.currentCenterOffset = retval;
@@ -374,42 +374,42 @@ export default {
       return !this.hasTouchEvents;
     },
     scrollLeftMin() {
-      const w = (this.boundingRight() - this.boundingLeft()) * this.zoom;
+      const w = (this.boundingRight - this.boundingLeft) * this.zoom;
       if (w < this.viewWidth) {
-        return (this.boundingLeft() + this.centerOffsetSmoothed()) * this.zoom - (this.viewWidth - w) / 2;
+        return (this.boundingLeft + this.centerOffsetSmoothed) * this.zoom - (this.viewWidth - w) / 2;
       } else {
-        return (this.boundingLeft() + this.centerOffsetSmoothed()) * this.zoom;
+        return (this.boundingLeft + this.centerOffsetSmoothed) * this.zoom;
       }
     },
     scrollLeftMax() {
-      const w = (this.boundingRight() - this.boundingLeft()) * this.zoom;
+      const w = (this.boundingRight - this.boundingLeft) * this.zoom;
       if (w < this.viewWidth) {
-        return (this.boundingLeft() + this.centerOffsetSmoothed()) * this.zoom - (this.viewWidth - w) / 2;
+        return (this.boundingLeft + this.centerOffsetSmoothed) * this.zoom - (this.viewWidth - w) / 2;
       } else {
-        return (this.boundingRight() + this.centerOffsetSmoothed()) * this.zoom - this.viewWidth;
+        return (this.boundingRight + this.centerOffsetSmoothed) * this.zoom - this.viewWidth;
       }
     },
     scrollTopMin() {
-      const h = this.pageHeight() * this.zoom;
+      const h = this.pageHeight * this.zoom;
       if (h < this.viewHeight) {
-        return this.yMargin() * this.zoom - (this.viewHeight - h) / 2;
+        return this.yMargin * this.zoom - (this.viewHeight - h) / 2;
       } else {
-        return this.yMargin() * this.zoom;
+        return this.yMargin * this.zoom;
       }
     },
     scrollTopMax() {
-      const h = this.pageHeight() * this.zoom;
+      const h = this.pageHeight * this.zoom;
       if (h < this.viewHeight) {
-        return this.yMargin() * this.zoom - (this.viewHeight - h) / 2;
+        return this.yMargin * this.zoom - (this.viewHeight - h) / 2;
       } else {
-        return (this.yMargin() + this.pageHeight()) * this.zoom - this.viewHeight;
+        return (this.yMargin + this.pageHeight) * this.zoom - this.viewHeight;
       }
     },
     scrollLeftLimited() {
-      return Math.min(this.scrollLeftMax(), Math.max(this.scrollLeftMin(), this.scrollLeft));
+      return Math.min(this.scrollLeftMax, Math.max(this.scrollLeftMin, this.scrollLeft));
     },
     scrollTopLimited() {
-      return Math.min(this.scrollTopMax(), Math.max(this.scrollTopMin(), this.scrollTop));
+      return Math.min(this.scrollTopMax, Math.max(this.scrollTopMin, this.scrollTop));
     },
   },
   mounted() {
@@ -482,26 +482,26 @@ export default {
           : 1;
 
       const image = face === 'front' ? this.flip.frontImage : this.flip.backImage;
-      const polygonWidth = this.pageWidth() / this.nPolygons;
+      const polygonWidth = this.pageWidth / this.nPolygons;
 
-      let pageX = this.xMargin();
+      let pageX = this.xMargin;
       let originRight = false;
       if (this.displayedPages === 1) {
         if (this.forwardDirection === 'right') {
           if (face === 'back') {
             originRight = true;
-            pageX = this.xMargin() - this.pageWidth();
+            pageX = this.xMargin - this.pageWidth;
           }
         } else {
           if (direction === 'left') {
             if (face === 'back') {
-              pageX = this.pageWidth() - this.xMargin();
+              pageX = this.pageWidth - this.xMargin;
             } else {
               originRight = true;
             }
           } else {
             if (face === 'front') {
-              pageX = this.pageWidth() - this.xMargin();
+              pageX = this.pageWidth - this.xMargin;
             } else {
               originRight = true;
             }
@@ -527,7 +527,7 @@ export default {
       pageMatrix.translate(this.viewWidth / 2);
       pageMatrix.perspective(this.perspective);
       pageMatrix.translate(-this.viewWidth / 2);
-      pageMatrix.translate(pageX, this.yMargin());
+      pageMatrix.translate(pageX, this.yMargin);
 
       let pageRotation = 0;
       if (progress > 0.5) {
@@ -541,14 +541,14 @@ export default {
       }
 
       if (pageRotation) {
-        pageMatrix.translate(this.pageWidth());
-        if (originRight) pageMatrix.translate(-this.pageWidth());
+        pageMatrix.translate(this.pageWidth);
+        if (originRight) pageMatrix.translate(-this.pageWidth);
         pageMatrix.rotateY(pageRotation);
       }
 
       let theta = progress < 0.5 ? progress * 2 * Math.PI : (1 - (progress - 0.5) * 2) * Math.PI;
       if (theta === 0) theta = 1e-9;
-      const radius = this.pageWidth() / theta;
+      const radius = this.pageWidth / theta;
 
       let radian = 0;
       const dRadian = theta / this.nPolygons;
@@ -573,7 +573,7 @@ export default {
         const m = pageMatrix.clone();
         const rad = originRight ? theta - radian : radian;
         let x = Math.sin(rad) * radius;
-        if (originRight) x = this.pageWidth() - x;
+        if (originRight) x = this.pageWidth - x;
         let z = (1 - Math.cos(rad)) * radius;
         if (face === 'back') z = -z;
 
