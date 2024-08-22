@@ -1,4 +1,4 @@
-import Flipbook from './Flipbook';
+import Flipbook from './Flipbook.vue';
 
 if (window.Vue && window.Vue.component) {
   // for Vue 2
@@ -7,3 +7,5 @@ if (window.Vue && window.Vue.component) {
   // for Vue 3
   window.Flipbook = Flipbook;
 }
+
+export default Flipbook;

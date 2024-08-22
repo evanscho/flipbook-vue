@@ -1,5 +1,5 @@
 {
-  "name": "flipbook-vue",
+  "name": "flipbook",
   "version": "1.0.0-beta.5",
   "license": "MIT",
   "description": "3D page flip effect for Vue.js",
@@ -18,14 +18,14 @@
   ],
   "type": "module",
   "main": "./dist/flipbook.umd.js",
-  "module": "./dist/flipbook.es.js",
-  "browser": "./dist/flipbook.es.js",
+  "module": "./dist/flipbook.js",
+  "browser": "./dist/flipbook.js",
   "types": "./types/flipbook.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/flipbook.es.js",
+      "import": "./dist/flipbook.js",
       "require": "./dist/flipbook.umd.js",
-      "default": "./dist/flipbook.es.js",
+      "default": "./dist/flipbook.js",
       "types": "./types/flipbook.d.ts"
     }
   },
