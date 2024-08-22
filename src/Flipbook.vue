@@ -137,7 +137,7 @@ export default {
     },
     pagesHiRes: {
       type: Array,
-      default() { return []; }
+      default: () => []
     },
     flipDuration: {
       type: Number,
@@ -149,7 +149,7 @@ export default {
     },
     zooms: {
       type: Array,
-      default() { return [1, 2, 4]; }
+      default: () => [1, 2, 4]
     },
     perspective: {
       type: Number,
@@ -180,7 +180,7 @@ export default {
       default: false
     },
     forwardDirection: {
-      validator(val) { return (val === 'right') || (val === 'left'); },
+      validator: (val) => val == 'right' || val == 'left',
       default: 'right'
     },
     centering: {
@@ -208,6 +208,7 @@ export default {
       default: 'scroll'
     }
   },
+
   data() {
     return {
       viewWidth: 0,
@@ -250,6 +251,7 @@ export default {
       loadedImages: {}
     };
   },
+
   computed: {
     IE() {
       return typeof navigator != 'undefined' && /Trident/.test(navigator.userAgent);
@@ -261,10 +263,10 @@ export default {
       return this.forwardDirection == 'right' ? this.canGoForward : this.canGoBack;
     },
     canZoomIn() {
-      return !this.zooming && (this.zoomIndex < (this.zooms_.length - 1)); 
+      return !this.zooming && this.zoomIndex < this.zooms_.length - 1;
     },
     canZoomOut() {
-      return !this.zooming && (this.zoomIndex > 0);
+      return !this.zooming && this.zoomIndex > 0;
     },
     numPages() {
       return this.pages[0] == null ? this.pages.length - 1 : this.pages.length;
@@ -272,13 +274,15 @@ export default {
     page() {
       return this.pages[0] != null ? this.currentPage + 1 : Math.max(1, this.currentPage);
     },
-    zooms_() { return this.zooms || [1]; },
+    zooms_() {
+      return this.zooms || [1];
+    },
     canGoForward() {
-      return !this.flip.direction && (this.currentPage < (this.pages.length - this.displayedPages));
+      return !this.flip.direction && this.currentPage < this.pages.length - this.displayedPages;
     },
     canGoBack() {
-      return !this.flip.direction && (this.currentPage >= this.displayedPages) &&
-        !((this.displayedPages === 1) && !this.pageUrl(this.firstPage - 1));
+      return !this.flip.direction && this.currentPage >= this.displayedPages &&
+        !(this.displayedPages == 1 && !this.pageUrl(this.firstPage - 1));
     },
     leftPage() {
       return this.forwardDirection == 'right' || this.displayedPages == 1 ? this.firstPage : this.secondPage;
@@ -290,7 +294,7 @@ export default {
       return this.pageUrl(this.leftPage);
     },
     showRightPage() {
-      return this.pageUrl(this.rightPage) && (this.displayedPages === 2);
+      return this.pageUrl(this.rightPage) && this.displayedPages == 2;
     },
     cursor() {
       if (this.activeCursor) return this.activeCursor;
@@ -314,7 +318,7 @@ export default {
       return Math.round(this.imageHeight * this.pageScale);
     },
     xMargin() {
-      return (this.viewWidth - (this.pageWidth * this.displayedPages)) / 2;
+      return (this.viewWidth - this.pageWidth * this.displayedPages) / 2;
     },
     yMargin() {
       return (this.viewHeight - this.pageHeight) / 2;
@@ -419,7 +423,7 @@ export default {
   },
   methods: {  
     onResize() {
-      const {viewport} = this.$refs;
+      const viewport = this.$refs.viewport;
       if (!viewport) return;
 
       this.viewWidth = viewport.clientWidth;
@@ -428,8 +432,7 @@ export default {
         (this.viewWidth > this.viewHeight && !this.singlePage) || this.doublePage
           ? 2
           : 1;
-      console.log('onResize', this.displayedPages);
-      if (this.displayedPages === 2) { 
+      if (this.displayedPages === 2) {
         this.currentPage &= ~1;
       }
       this.fixFirstPage();
@@ -437,62 +440,47 @@ export default {
       this.maxX = -Infinity;
     },
     fixFirstPage() {
-      if ((this.displayedPages === 1) &&
-        (this.currentPage === 0) &&
-        this.pages.length &&
-        !this.pageUrl(0)) { this.currentPage++; }
+      if (this.displayedPages === 1 && this.currentPage === 0 && this.pages.length && !this.pageUrl(0)) {
+        this.currentPage++;
+      }
     },
-    pageUrl(page, hiRes) {
-      if (hiRes == null) { hiRes = false; }
-      if (hiRes && (this.zoom > 1) && !this.zooming) {
+    pageUrl(page, hiRes = false) {
+      if (hiRes && this.zoom > 1 && !this.zooming) {
         const url = this.pagesHiRes[page];
-        if (url) { return url; }
+        if (url) return url;
       }
       return this.pages[page] || null;
     },
-    pageUrlLoading(page, hiRes) {
-      if (hiRes == null) { hiRes = false; }
+    pageUrlLoading(page, hiRes = false) {
       const url = this.pageUrl(page, hiRes);
-      // High-res image doesn't use 'loading'
-      if (hiRes && (this.zoom > 1) && !this.zooming) { return url; }
+      if (hiRes && this.zoom > 1 && !this.zooming) return url;
       return url && this.loadImage(url);
     },
     flipLeft() {
-      if (!this.canFlipLeft) { return; }
+      if (!this.canFlipLeft) return;
       this.flipStart('left', true);
     },
     flipRight() {
-      if (!this.canFlipRight) { return; }
+      if (!this.canFlipRight) return;
       this.flipStart('right', true);
     },
     makePolygonArray(face) {
-      let theta;
-      if (!this.flip.direction) { return []; }
+      if (!this.flip.direction) return [];
 
-      let {
-        progress
-      } = this.flip;
-      let {
-        direction
-      } = this.flip;
+      let progress = this.flip.progress;
+      let direction = this.flip.direction;
 
-      if ((this.displayedPages === 1) && (direction !== this.forwardDirection)) {
+      if (this.displayedPages === 1 && direction !== this.forwardDirection) {
         progress = 1 - progress;
         direction = this.forwardDirection;
       }
 
       this.flip.opacity =
-        (this.displayedPages === 1) && (progress > .7) ?
-          1 - ((progress - .7) / .3)
-        :
-          1;
+        this.displayedPages === 1 && progress > 0.7
+          ? 1 - (progress - 0.7) / 0.3
+          : 1;
 
-      const image =
-        face === 'front' ?
-          this.flip.frontImage
-        :
-          this.flip.backImage;
-
+      const image = face === 'front' ? this.flip.frontImage : this.flip.backImage;
       const polygonWidth = this.pageWidth / this.nPolygons;
 
       let pageX = this.xMargin;
@@ -547,51 +535,46 @@ export default {
       if (direction === 'left') {
         pageRotation = -pageRotation;
       }
-      if (face === 'back') { pageRotation += 180; }
+      if (face === 'back') {
+        pageRotation += 180;
+      }
 
       if (pageRotation) {
-        if (originRight) { pageMatrix.translate(this.pageWidth); }
+        pageMatrix.translate(this.pageWidth);
+        if (originRight) pageMatrix.translate(-this.pageWidth);
         pageMatrix.rotateY(pageRotation);
-        if (originRight) { pageMatrix.translate(-this.pageWidth); }
       }
 
-      if (progress < 0.5) {
-        theta = progress * 2 * Math.PI;
-      } else {
-        theta = (1 - ((progress - 0.5) * 2)) * Math.PI;
-      }
-      if (theta === 0) {
-        theta = 1e-9;
-      }
+      let theta = progress < 0.5 ? progress * 2 * Math.PI : (1 - (progress - 0.5) * 2) * Math.PI;
+      if (theta === 0) theta = 1e-9;
       const radius = this.pageWidth / theta;
 
       let radian = 0;
       const dRadian = theta / this.nPolygons;
       let rotate = (dRadian / 2 / Math.PI) * 180;
-      let dRotate = (dRadian / Math.PI) * 180;
+      const dRotate = (dRadian / Math.PI) * 180;
 
       if (originRight) {
-        rotate = ((-theta / Math.PI) * 180) + (dRotate / 2);
+        rotate = -(theta / Math.PI) * 180 + dRotate / 2;
       }
 
       if (face === 'back') {
         rotate = -rotate;
-        dRotate = -dRotate;
       }
 
       this.minX = Infinity;
       this.maxX = -Infinity;
-      return (() => {
-        const result = [];
-        for (let i = 0, end = this.nPolygons, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+      const polygons = [];
+
+      for (let i = 0; i < this.nPolygons; i++) {
         const bgPos = `${(i / (this.nPolygons - 1)) * 100}% 0px`;
 
         const m = pageMatrix.clone();
         const rad = originRight ? theta - radian : radian;
         let x = Math.sin(rad) * radius;
-          if (originRight) { x = this.pageWidth - x; }
+        if (originRight) x = this.pageWidth - x;
         let z = (1 - Math.cos(rad)) * radius;
-          if (face === 'back') { z = -z; }
+        if (face === 'back') z = -z;
 
         m.translate3d(x, 0, z);
         m.rotateY(-rotate);
@@ -605,51 +588,52 @@ export default {
 
         radian += dRadian;
         rotate += dRotate;
-          result.push([face+i, image, lighting, bgPos, m.toString(), Math.abs(Math.round(z))]);
+
+        polygons.push([`${face}${i}`, image, lighting, bgPos, m.toString(), Math.abs(Math.round(z))]);
       }
-        return result;
-      })();
+
+      return polygons;
     },
     computeLighting(rot, dRotate) {
       const gradients = [];
       const lightingPoints = [-0.5, -0.25, 0, 0.25, 0.5];
+
       if (this.ambient < 1) {
         const blackness = 1 - this.ambient;
-        const diffuse = lightingPoints.map(d => {
-          return (1 - Math.cos(((rot - (dRotate * d)) / 180) * Math.PI)) * blackness;
-        });
-        gradients.push(`\
+        const diffuse = lightingPoints.map((d) => 
+          (1 - Math.cos((rot - dRotate * d) / 180 * Math.PI)) * blackness
+        );
+        gradients.push(`
           linear-gradient(to right,
             rgba(0, 0, 0, ${diffuse[0]}),
             rgba(0, 0, 0, ${diffuse[1]}) 25%,
             rgba(0, 0, 0, ${diffuse[2]}) 50%,
             rgba(0, 0, 0, ${diffuse[3]}) 75%,
-            rgba(0, 0, 0, ${diffuse[4]}))\
-          `
-                  );
+            rgba(0, 0, 0, ${diffuse[4]}))
+        `);
       }
 
-      if ((this.gloss > 0) && !this.IE) {
+      if (this.gloss > 0 && !this.IE) {
         const DEG = 30;
         const POW = 200;
-        const specular = lightingPoints.map(d => {
-          return Math.max(
-            Math.pow(Math.cos((((rot + DEG) - (dRotate * d)) / 180) * Math.PI), POW),
-            Math.pow(Math.cos(((rot - DEG - (dRotate * d)) / 180) * Math.PI), POW)
+        const specular = lightingPoints.map((d) =>
+          Math.max(
+            Math.cos((rot + DEG - dRotate * d) / 180 * Math.PI) ** POW,
+            Math.cos((rot - DEG - dRotate * d) / 180 * Math.PI) ** POW
+          )
         );
-        });
-        gradients.push(`\
+        gradients.push(`
           linear-gradient(to right,
             rgba(255, 255, 255, ${specular[0] * this.gloss}),
             rgba(255, 255, 255, ${specular[1] * this.gloss}) 25%,
             rgba(255, 255, 255, ${specular[2] * this.gloss}) 50%,
             rgba(255, 255, 255, ${specular[3] * this.gloss}) 75%,
-            rgba(255, 255, 255, ${specular[4] * this.gloss}))\
-          `
-                  );
+            rgba(255, 255, 255, ${specular[4] * this.gloss}))
+        `);
       }
       return gradients.join(',');
     },
+
     flipStart(direction, auto) {
       if (direction !== this.forwardDirection) {
         if (this.displayedPages === 1) {
@@ -657,7 +641,7 @@ export default {
           this.flip.backImage = null;
         } else {
           this.flip.frontImage = this.pageUrl(this.firstPage);
-          this.flip.backImage = this.pageUrl((this.currentPage - this.displayedPages) + 1);
+          this.flip.backImage = this.pageUrl(this.currentPage - this.displayedPages + 1);
         }
       } else {
         if (this.displayedPages === 1) {
@@ -671,7 +655,8 @@ export default {
 
       this.flip.direction = direction;
       this.flip.progress = 0;
-      return requestAnimationFrame(() => { return requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
           if (this.flip.direction !== this.forwardDirection) {
             if (this.displayedPages === 2) {
               this.firstPage = this.currentPage - this.displayedPages;
@@ -683,23 +668,26 @@ export default {
               this.secondPage = this.currentPage + 1 + this.displayedPages;
             }
           }
-        if (auto) { return this.flipAuto(true); }
+          if (auto) this.flipAuto(true);
         });
       });
     },
+
     flipAuto(ease) {
       const t0 = Date.now();
       const duration = this.flipDuration * (1 - this.flip.progress);
       const startRatio = this.flip.progress;
       this.flip.auto = true;
       this.$emit(`flip-${this.flip.direction}-start`, this.page);
-      var animate = () => { return requestAnimationFrame(() => {
+      
+      const animate = () => {
+        requestAnimationFrame(() => {
           const t = Date.now() - t0;
-        let ratio = startRatio + (t / duration);
-        if (ratio > 1) { ratio = 1; }
+          let ratio = startRatio + t / duration;
+          if (ratio > 1) ratio = 1;
           this.flip.progress = ease ? easeInOut(ratio) : ratio;
           if (ratio < 1) {
-          return animate();
+            animate();
           } else {
             if (this.flip.direction !== this.forwardDirection) {
               this.currentPage -= this.displayedPages;
@@ -707,73 +695,86 @@ export default {
               this.currentPage += this.displayedPages;
             }
             this.$emit(`flip-${this.flip.direction}-end`, this.page);
-          if ((this.displayedPages === 1) && (this.flip.direction === this.forwardDirection)) {
+            if (this.displayedPages === 1 && this.flip.direction === this.forwardDirection) {
               this.flip.direction = null;
             } else {
-            this.onImageLoad(1, () => { return this.flip.direction = null; });
+              this.onImageLoad(1, () => {
+                this.flip.direction = null;
+              });
             }
-          return this.flip.auto = false;
+            this.flip.auto = false;
           }
-      }); };
-      return animate();
+        });
+      };
+      animate();
     },
+
     flipRevert() {
       const t0 = Date.now();
       const duration = this.flipDuration * this.flip.progress;
       const startRatio = this.flip.progress;
       this.flip.auto = true;
-      var animate = () => { return requestAnimationFrame(() => {
+      
+      const animate = () => {
+        requestAnimationFrame(() => {
           const t = Date.now() - t0;
-        let ratio = startRatio - ((startRatio * t) / duration);
-        if (ratio < 0) { ratio = 0; }
+          let ratio = startRatio - (startRatio * t) / duration;
+          if (ratio < 0) ratio = 0;
           this.flip.progress = ratio;
           if (ratio > 0) {
-          return animate();
+            animate();
           } else {
             this.firstPage = this.currentPage;
             this.secondPage = this.currentPage + 1;
-          if ((this.displayedPages === 1) && (this.flip.direction !== this.forwardDirection)) {
+            if (this.displayedPages === 1 && this.flip.direction !== this.forwardDirection) {
               this.flip.direction = null;
             } else {
-            this.onImageLoad(1, () => { return this.flip.direction = null; });
+              this.onImageLoad(1, () => {
+                this.flip.direction = null;
+              });
             }
-          return this.flip.auto = false;
+            this.flip.auto = false;
           }
-      }); };
-      return animate();
+        });
+      };
+      animate();
     },
+
     onImageLoad(trigger, cb) {
       this.nImageLoad = 0;
       this.nImageLoadTrigger = trigger;
-      return this.imageLoadCallback = cb;
+      this.imageLoadCallback = cb;
     },
+
     didLoadImage(ev) {
-      if (this.imageWidth === null) {
+      if (this.imageWidth == null) {
         this.imageWidth = (ev.target || ev.path[0]).naturalWidth;
         this.imageHeight = (ev.target || ev.path[0]).naturalHeight;
         this.preloadImages();
       }
-      if (!this.imageLoadCallback) { return; }
+      if (!this.imageLoadCallback) return;
       if (++this.nImageLoad >= this.nImageLoadTrigger) {
         this.imageLoadCallback();
-        return this.imageLoadCallback = null;
+        this.imageLoadCallback = null;
       }
     },
-    zoomIn(zoomAt=null) {
-      if (!this.canZoomIn) { return; }
+
+    zoomIn(zoomAt = null) {
+      if (!this.canZoomIn) return;
       this.zoomIndex += 1;
-      return this.zoomTo(this.zooms_[this.zoomIndex], zoomAt);
+      this.zoomTo(this.zooms_[this.zoomIndex], zoomAt);
     },
-    zoomOut(zoomAt=null) {
-      if (!this.canZoomOut) { return; }
+
+    zoomOut(zoomAt = null) {
+      if (!this.canZoomOut) return;
       this.zoomIndex -= 1;
-      return this.zoomTo(this.zooms_[this.zoomIndex], zoomAt);
+      this.zoomTo(this.zooms_[this.zoomIndex], zoomAt);
     },
-    zoomTo(zoom, zoomAt=null) {
+
+    zoomTo(zoom, zoomAt = null) {
+      const viewport = this.$refs.viewport;
       let fixedX, fixedY;
-      const {
-        viewport
-      } = this.$refs;
+
       if (zoomAt) {
         const rect = viewport.getBoundingClientRect();
         fixedX = zoomAt.pageX - rect.left;
@@ -782,184 +783,209 @@ export default {
         fixedX = viewport.clientWidth / 2;
         fixedY = viewport.clientHeight / 2;
       }
+
       const start = this.zoom;
       const end = zoom;
       const startX = viewport.scrollLeft;
       const startY = viewport.scrollTop;
       const containerFixedX = fixedX + startX;
       const containerFixedY = fixedY + startY;
-      const endX = ((containerFixedX / start) * end) - fixedX;
-      const endY = ((containerFixedY / start) * end) - fixedY;
+      const endX = (containerFixedX / start) * end - fixedX;
+      const endY = (containerFixedY / start) * end - fixedY;
 
       const t0 = Date.now();
       this.zooming = true;
       this.$emit('zoom-start', zoom);
-      var animate = () => { return requestAnimationFrame(() => {
+      
+      const animate = () => {
+        requestAnimationFrame(() => {
           const t = Date.now() - t0;
           let ratio = t / this.zoomDuration;
-        if ((ratio > 1) || this.IE) { ratio = 1; }
+          if (ratio > 1 || this.IE) ratio = 1;
           ratio = easeInOut(ratio);
-        this.zoom = start + ((end - start) * ratio);
-        this.scrollLeft = startX + ((endX - startX) * ratio);
-        this.scrollTop = startY + ((endY - startY) * ratio);
+          this.zoom = start + (end - start) * ratio;
+          this.scrollLeft = startX + (endX - startX) * ratio;
+          this.scrollTop = startY + (endY - startY) * ratio;
           if (t < this.zoomDuration) {
-          return animate();
+            animate();
           } else {
             this.$emit('zoom-end', zoom);
             this.zooming = false;
             this.zoom = zoom;
             this.scrollLeft = endX;
-          return this.scrollTop = endY;
+            this.scrollTop = endY;
           }
-      }); };
+        });
+      };
       animate();
       if (end > 1) {
-        return this.preloadImages(true);
+        this.preloadImages(true);
       }
     },
+
     zoomAt(zoomAt) {
       this.zoomIndex = (this.zoomIndex + 1) % this.zooms_.length;
-      return this.zoomTo(this.zooms_[this.zoomIndex], zoomAt);
+      this.zoomTo(this.zooms_[this.zoomIndex], zoomAt);
     },
+
     swipeStart(touch) {
       this.touchStartX = touch.pageX;
       this.touchStartY = touch.pageY;
       this.maxMove = 0;
       if (this.zoom <= 1) {
         if (this.dragToFlip) {
-          return this.activeCursor = 'grab';
+          this.activeCursor = 'grab';
         }
       } else {
         this.startScrollLeft = this.$refs.viewport.scrollLeft;
         this.startScrollTop = this.$refs.viewport.scrollTop;
-        return this.activeCursor = 'all-scroll';
+        this.activeCursor = 'all-scroll';
       }
     },
+
     swipeMove(touch) {
-      if (this.touchStartX == null) { return; }
+      if (this.touchStartX == null) return;
+
       const x = touch.pageX - this.touchStartX;
       const y = touch.pageY - this.touchStartY;
       this.maxMove = Math.max(this.maxMove, Math.abs(x));
       this.maxMove = Math.max(this.maxMove, Math.abs(y));
       if (this.zoom > 1) {
-        if (this.dragToScroll) { this.dragScroll(x, y); }
+        if (this.dragToScroll) this.dragScroll(x, y);
         return;
       }
-      if (!this.dragToFlip) { return; }
-      if (Math.abs(y) > Math.abs(x)) { return; }
+      if (!this.dragToFlip) return;
+      if (Math.abs(y) > Math.abs(x)) return;
       this.activeCursor = 'grabbing';
       if (x > 0) {
-        if ((this.flip.direction === null) && this.canFlipLeft && (x >= this.swipeMin)) {
+        if (this.flip.direction == null && this.canFlipLeft && x >= this.swipeMin) {
           this.flipStart('left', false);
         }
         if (this.flip.direction === 'left') {
           this.flip.progress = x / this.pageWidth;
-          if (this.flip.progress > 1) { this.flip.progress = 1; }
+          if (this.flip.progress > 1) this.flip.progress = 1;
         }
       } else {
-        if ((this.flip.direction === null) && this.canFlipRight && (x <= -this.swipeMin)) {
+        if (this.flip.direction == null && this.canFlipRight && x <= -this.swipeMin) {
           this.flipStart('right', false);
         }
         if (this.flip.direction === 'right') {
           this.flip.progress = -x / this.pageWidth;
-          if (this.flip.progress > 1) { this.flip.progress = 1; }
+          if (this.flip.progress > 1) this.flip.progress = 1;
         }
       }
       return true;
     },
+
     swipeEnd(touch) {
-      if (this.touchStartX == null) { return; }
-      if (this.clickToZoom && (this.maxMove < this.swipeMin)) { this.zoomAt(touch); }
-      if ((this.flip.direction !== null) && !this.flip.auto) {
-        if (this.flip.progress > (1/4)) {
+      if (this.touchStartX == null) return;
+      if (this.clickToZoom && this.maxMove < this.swipeMin) {
+        this.zoomAt(touch);
+      }
+      if (this.flip.direction != null && !this.flip.auto) {
+        if (this.flip.progress > 0.25) {
           this.flipAuto(false);
         } else {
           this.flipRevert();
         }
       }
       this.touchStartX = null;
-      return this.activeCursor = null;
+      this.activeCursor = null;
     },
+
     onTouchStart(ev) {
       this.hasTouchEvents = true;
-      return this.swipeStart(ev.changedTouches[0]);
+      this.swipeStart(ev.changedTouches[0]);
     },
+
     onTouchMove(ev) {
       if (this.swipeMove(ev.changedTouches[0])) {
-        if (ev.cancelable) { return ev.preventDefault(); }
+        if (ev.cancelable) ev.preventDefault();
       }
     },
-    onTouchEnd(ev) { return this.swipeEnd(ev.changedTouches[0]); },
+
+    onTouchEnd(ev) {
+      this.swipeEnd(ev.changedTouches[0]);
+    },
+
     onPointerDown(ev) {
       this.hasPointerEvents = true;
-      if (this.hasTouchEvents) { return; }
-      if (ev.which && (ev.which !== 1)) { return; } // Ignore right-click
+      if (this.hasTouchEvents) return;
+      if (ev.which && ev.which !== 1) return; // Ignore right-click
       this.swipeStart(ev);
       try {
-        return ev.target.setPointerCapture(ev.pointerId);
-      } catch (error) {}
+        ev.target.setPointerCapture(ev.pointerId);
+      } catch (e) {}
     },
-    onPointerMove(ev) { if (!this.hasTouchEvents) { return this.swipeMove(ev); } },
+
+    onPointerMove(ev) {
+      if (!this.hasTouchEvents) this.swipeMove(ev);
+    },
+
     onPointerUp(ev) {
-      if (this.hasTouchEvents) { return; }
+      if (this.hasTouchEvents) return;
       this.swipeEnd(ev);
       try {
-        return ev.target.releasePointerCapture(ev.pointerId);
-      } catch (error) {}
+        ev.target.releasePointerCapture(ev.pointerId);
+      } catch (e) {}
     },
+
     onMouseDown(ev) {
-      if (this.hasTouchEvents || this.hasPointerEvents) { return; }
-      if (ev.which && (ev.which !== 1)) { return; } // Ignore right-click
-      return this.swipeStart(ev);
+      if (this.hasTouchEvents || this.hasPointerEvents) return;
+      if (ev.which && ev.which !== 1) return; // Ignore right-click
+      this.swipeStart(ev);
     },
+
     onMouseMove(ev) {
-      if (!this.hasTouchEvents && !this.hasPointerEvents) { return this.swipeMove(ev); }
+      if (!this.hasTouchEvents && !this.hasPointerEvents) this.swipeMove(ev);
     },
+
     onMouseUp(ev) {
-      if (!this.hasTouchEvents && !this.hasPointerEvents) { return this.swipeEnd(ev); }
+      if (!this.hasTouchEvents && !this.hasPointerEvents) this.swipeEnd(ev);
     },
+
     dragScroll(x, y) {
       this.scrollLeft = this.startScrollLeft - x;
-      return this.scrollTop = this.startScrollTop - y;
+      this.scrollTop = this.startScrollTop - y;
     },
+
     onWheel(ev) {
-      if ((this.wheel === 'scroll') && (this.zoom > 1) && this.dragToScroll) {
+      if (this.wheel === 'scroll' && this.zoom > 1 && this.dragToScroll) {
         this.scrollLeft = this.$refs.viewport.scrollLeft + ev.deltaX;
         this.scrollTop = this.$refs.viewport.scrollTop + ev.deltaY;
-        if (ev.cancelable) { ev.preventDefault(); }
+        if (ev.cancelable) ev.preventDefault();
       }
 
       if (this.wheel === 'zoom') {
         if (ev.deltaY >= 100) {
           this.zoomOut(ev);
-          return ev.preventDefault();
+          if (ev.cancelable) ev.preventDefault();
         } else if (ev.deltaY <= -100) {
           this.zoomIn(ev);
-          return ev.preventDefault();
+          if (ev.cancelable) ev.preventDefault();
         }
       }
     },
-    preloadImages(hiRes) {
-      let asc, end, start;
-      let i;
-      if (hiRes == null) { hiRes = false; }
-      for (start = this.currentPage - 3, i = start, end = this.currentPage + 3, asc = start <= end; asc ? i <= end : i >= end; asc ? i++ : i--) {
-        this.pageUrlLoading(i);
-      } // this preloads image
+
+    preloadImages(hiRes = false) {
+      for (let i = this.currentPage - 3; i <= this.currentPage + 3; i++) {
+        this.pageUrlLoading(i); // This preloads image
+      }
       if (hiRes) {
-        let asc1, end1;
-        for (i = this.currentPage, end1 = this.currentPage + this.displayedPages, asc1 = this.currentPage <= end1; asc1 ? i < end1 : i > end1; asc1 ? i++ : i--) {
+        for (let i = this.currentPage; i < this.currentPage + this.displayedPages; i++) {
           const src = this.pagesHiRes[i];
           if (src) {
-            (new Image()).src = src;
+            const img = new Image();
+            img.src = src;
           }
         }
       }
     },
+
     goToPage(p) {
-      if ((p === null) || (p === this.page)) { return; }
-      if (this.pages[0] === null) {
-        if ((this.displayedPages === 2) && (p === 1)) {
+      if (p == null || p === this.page) return;
+      if (this.pages[0] == null) {
+        if (this.displayedPages === 2 && p === 1) {
           this.currentPage = 0;
         } else {
           this.currentPage = p;
@@ -969,12 +995,13 @@ export default {
       }
       this.minX = Infinity;
       this.maxX = -Infinity;
-      return this.currentCenterOffset = this.centerOffset;
+      this.currentCenterOffset = this.centerOffset;
     },
+
     loadImage(url) {
-      if (this.imageWidth === null) {
-        // First loaded image defines the image width and height.
-        // So it must be true image, not 'loading' image.
+      console.log(`loadImage of ${url} with imageWidth ${this.imageWidth}, loadedImages[url] ${loadedImages[url]}`);
+      console.log('loadedImages', this.loadedImages);
+      if (this.imageWidth == null) {
         return url;
       } else {
         if (this.loadedImages[url]) {
@@ -983,9 +1010,9 @@ export default {
           const img = new Image();
           img.onload = () => {
             if (this.$set) {
-              return this.$set(this.loadedImages, url, true);
+              this.$set(this.loadedImages, url, true);
             } else {
-              return this.loadedImages[url] = true;
+              this.loadedImages[url] = true;
             }
           };
           img.src = url;
@@ -993,52 +1020,6 @@ export default {
         }
       }
     }
-  },
-  watch: {
-    currentPage() {
-      this.firstPage = this.currentPage;
-      this.secondPage = this.currentPage + 1;
-      return this.preloadImages();
-    },
-    centerOffset() {
-      if (this.animatingCenter) { return; }
-      var animate = () => { return requestAnimationFrame(() => {
-        const rate = 0.1;
-        const diff = this.centerOffset - this.currentCenterOffset;
-        if (Math.abs(diff) < 0.5) {
-          this.currentCenterOffset = this.centerOffset;
-          return this.animatingCenter = false;
-        } else {
-          this.currentCenterOffset += diff * rate;
-          return animate();
-        }
-      }); };
-      this.animatingCenter = true;
-      return animate();
-    },
-    scrollLeftLimited(val) {
-      if (this.IE) {
-        return requestAnimationFrame(() => { return this.$refs.viewport.scrollLeft = val; });
-      } else {
-        return this.$refs.viewport.scrollLeft = val;
-      }
-    },
-    scrollTopLimited(val) {
-      if (this.IE) {
-        return requestAnimationFrame(() => { return this.$refs.viewport.scrollTop = val; });
-      } else {
-        return this.$refs.viewport.scrollTop = val;
-      }
-    },
-    pages(after, before) {
-      this.fixFirstPage();
-      if (!(before != null ? before.length : undefined) && (after != null ? after.length : undefined)) {
-        if ((this.startPage > 1) && (after[0] === null)) {
-          return this.currentPage++;
-        }
-      }
-    },
-    startPage(p) { return this.goToPage(p); }
   }
 };
 </script>
