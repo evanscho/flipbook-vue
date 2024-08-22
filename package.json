@@ -19,11 +19,13 @@
   "type": "module",
   "main": "./dist/flipbook.umd.js",
   "module": "./dist/flipbook.es.js",
+  "browser": "./dist/flipbook.es.js",
   "types": "./types/flipbook.d.ts",
   "exports": {
     ".": {
       "import": "./dist/flipbook.es.js",
       "require": "./dist/flipbook.umd.js",
+      "default": "./dist/flipbook.es.js",
       "types": "./types/flipbook.d.ts"
     }
   },

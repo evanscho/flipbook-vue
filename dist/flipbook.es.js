@@ -35,6 +35,7 @@ const j = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
     r[a] = o;
   return r;
 }, D = (t) => Math.pow(t, 2), K = (t) => 1 - D(1 - t), k = (t) => t < 0.5 ? D(t * 2) / 2 : 0.5 + K((t - 0.5) * 2) / 2, Q = {
+  name: "Flipbook",
   props: {
     pages: {
       type: Array,
@@ -332,14 +333,14 @@ const j = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       const c = [];
       for (let l = 0; l < this.nPolygons; l++) {
         const X = `${l / (this.nPolygons - 1) * 100}% 0px`, w = h.clone(), I = s ? f - u : u;
-        let b = Math.sin(I) * m;
-        s && (b = this.pageWidth() - b);
-        let x = (1 - Math.cos(I)) * m;
-        t === "back" && (x = -x), w.translate3d(b, 0, x), w.rotateY(-d);
+        let x = Math.sin(I) * m;
+        s && (x = this.pageWidth() - x);
+        let b = (1 - Math.cos(I)) * m;
+        t === "back" && (b = -b), w.translate3d(x, 0, b), w.rotateY(-d);
         const L = w.transformX(0), T = w.transformX(o);
         this.maxX = Math.max(Math.max(L, T), this.maxX), this.minX = Math.min(Math.min(L, T), this.minX);
         const E = this.computeLighting(n - d, y);
-        u += P, d += y, c.push([`${t}${l}`, a, E, X, w.toString(), Math.abs(Math.round(x))]);
+        u += P, d += y, c.push([`${t}${l}`, a, E, X, w.toString(), Math.abs(Math.round(b))]);
       }
       return c;
     },
@@ -656,7 +657,7 @@ function tt(t, i, r, a, o, e) {
     ], 38)
   ]);
 }
-const st = /* @__PURE__ */ J(Q, [["render", tt], ["__scopeId", "data-v-50262a4a"]]);
+const st = /* @__PURE__ */ J(Q, [["render", tt], ["__scopeId", "data-v-5986f15e"]]);
 export {
   st as default
 };

@@ -130,6 +130,7 @@ const easeInOut = (x) => {
 };
 
 export default {
+  name: 'Flipbook',
   props: {
     pages: {
       type: Array,
