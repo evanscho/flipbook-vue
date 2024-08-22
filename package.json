@@ -17,9 +17,9 @@
     "3d"
   ],
   "type": "module",
-  "main": "dist/flipbook-vue.umd.js",
-  "module": "dist/flipbook-vue.es.js",
-  "types": "types/flipbook.d.ts",
+  "main": "./dist/flipbook-vue.umd.js",
+  "module": "./dist/flipbook-vue.es.js",
+  "types": "./types/flipbook.d.ts",
   "exports": {
     ".": {
       "import": "./dist/flipbook-vue.es.js",
@@ -28,8 +28,8 @@
     }
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "*",
     "postcss": "*",
+    "autoprefixer": "*",
     "vite": "*",
     "@vitejs/plugin-vue": "*"
   },
