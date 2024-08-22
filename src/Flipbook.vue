@@ -267,6 +267,12 @@ export default {
       return !this.flip.direction && this.currentPage < this.pages.length - this.displayedPages;
     },
     canGoBack() {
+      if (!this.flip.direction && this.currentPage >= this.displayedPages && this.displayedPages === 1) {
+        console.log(`canGoBack and will call pageUrl with ${this.firstPage - 1}`);
+      } else {
+        console.log(`canGoBack and won't call pageUrl`);
+      }
+
       return (
         !this.flip.direction &&
         this.currentPage >= this.displayedPages &&
@@ -326,19 +332,25 @@ export default {
       return `${this.pageWidth}px ${this.pageHeight}px`;
     },
     polygonArray() {
-      return this.makePolygonArray('front').concat(this.makePolygonArray('back'));
+      const array = this.makePolygonArray('front').concat(this.makePolygonArray('back'));
+      console.log('polygonArray', array)
+      return array;
     },
     boundingLeft() {
+      console.log('boundingLeft');
       if (this.displayedPages === 1) {
         return this.xMargin;
       }
+      console.log('in boundingLeft, about to call pageUrl');
       const x = this.pageUrl(this.leftPage) ? this.xMargin : this.viewWidth / 2;
       return x < this.minX ? x : this.minX;
     },
     boundingRight() {
+      console.log('boundingRight');
       if (this.displayedPages === 1) {
         return this.viewWidth - this.xMargin;
       }
+      console.log('in boundingLeft, about to call pageUrl');
       const x = this.pageUrl(this.rightPage) ? this.viewWidth - this.xMargin : this.viewWidth / 2;
       return x > this.maxX ? x : this.maxX;
     },
@@ -416,6 +428,12 @@ export default {
       this.maxX = -Infinity;
     },
     fixFirstPage() {
+      if (this.displayedPages === 1 && this.currentPage === 0 && this.pages.length) {
+        console.log(`in fixFirstPage and will call pageUrl[0]`);
+      } else {
+        console.log(`in fixFirstPage and won't call pageUrl[0]`);
+      }
+
       if (this.displayedPages === 1 && this.currentPage === 0 && this.pages.length && !this.pageUrl(0)) {
         this.currentPage += 1;
       }
@@ -430,11 +448,11 @@ export default {
       return this.pages[page] || null;
     },
     pageUrlLoading(page, hiRes = false) {
-      console.log(`pageUrlLoading of ${page} with hiRes ${hiRes}`);
+      console.log(`pageUrlLoading and about to call pageUrl with page ${page} and hiRes ${hiRes}`);
       const url = this.pageUrl(page, hiRes);
-      console.log(`url is ${url}`);
+      console.log(`pageUrlLoading: url is ${url}`);
       if (hiRes && this.zoom > 1 && !this.zooming) return url;
-      console.log(`about to loadImage with url ${url}`);
+      console.log(`pageUrlLoading: about to loadImage with url ${url}`);
       if (url) {
         return this.loadImage(url);
       }
@@ -608,6 +626,7 @@ export default {
     },
 
     flipStart(direction, auto) {
+      console.log(`flipStart, will call pageUrl with ${this.currentPage}`);
       if (direction !== this.forwardDirection) {
         if (this.displayedPages === 1) {
           this.flip.frontImage = this.pageUrl(this.currentPage - 1);
