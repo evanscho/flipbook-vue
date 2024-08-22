@@ -305,7 +305,10 @@ export default {
       const vw = this.viewWidth / this.displayedPages;
       const xScale = vw / this.imageWidth;
       const yScale = this.viewHeight / this.imageHeight;
+      console.log(`pageScale with viewWidth ${this.viewWidth}, viewHeight ${this.viewHeight}, imageWidth ${this.imageWidth}, imageHeight ${this.imageHeight}`)
+      console.log(`pageScale = ${xScale < yScale ? xScale : yScale}`)
       const scale = xScale < yScale ? xScale : yScale;
+
       return scale < 1 ? scale : 1;
     },
     pageWidth() {
@@ -411,6 +414,28 @@ export default {
 
   beforeUnmount() {
     window.removeEventListener('resize', this.onResize, { passive: true });
+  },
+  watch: {
+    imageWidth(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        console.log(`imageWidth changed from ${oldVal} to ${newVal}`);
+      }
+    },
+    imageHeight(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        console.log(`imageHeight changed from ${oldVal} to ${newVal}`);
+      }
+    },
+    pageWidth(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        console.log(`pageWidth changed from ${oldVal} to ${newVal}`);
+      }
+    },
+    pageHeight(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        console.log(`pageHeight changed from ${oldVal} to ${newVal}`);
+      }
+    },
   },
   methods: {
     onResize() {
