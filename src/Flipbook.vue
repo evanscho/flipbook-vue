@@ -460,7 +460,13 @@ export default {
       const url = this.pageUrl(page, hiRes);
       console.log(`url is ${url}`);
       if (hiRes && this.zoom > 1 && !this.zooming) return url;
-      return url && this.loadImage(url);
+      console.log(`about to loadImage with url ${url}`);
+      if (url) {
+        return this.loadImage(url);
+      } else {
+        return null;
+      }
+      // return url && this.loadImage(url);
     },
     flipLeft() {
       if (!this.canFlipLeft) return;
