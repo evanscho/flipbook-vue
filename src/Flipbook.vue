@@ -753,13 +753,16 @@ export default {
     },
 
     didLoadImage(ev) {
+      console.log('didLoadImage');
       if (this.imageWidth == null) {
         this.imageWidth = (ev.target || ev.path[0]).naturalWidth;
         this.imageHeight = (ev.target || ev.path[0]).naturalHeight;
+        console.log(`about to preloadImages with this.imageWidth ${this.imageWidth}`);
         this.preloadImages();
       }
       if (!this.imageLoadCallback) return;
       if (++this.nImageLoad >= this.nImageLoadTrigger) {
+        console.log('calling imageLoadCallback');
         this.imageLoadCallback();
         this.imageLoadCallback = null;
       }

@@ -327,29 +327,29 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       const o = t === "front" ? this.flip.frontImage : this.flip.backImage, a = this.pageWidth / this.nPolygons;
       let e = this.xMargin, s = !1;
       this.displayedPages === 1 ? this.forwardDirection === "right" ? t === "back" && (s = !0, e = this.xMargin - this.pageWidth) : r === "left" ? t === "back" ? e = this.pageWidth - this.xMargin : s = !0 : t === "front" ? e = this.pageWidth - this.xMargin : s = !0 : r === "left" ? t === "back" ? e = this.viewWidth / 2 : s = !0 : t === "front" ? e = this.viewWidth / 2 : s = !0;
-      const n = new x();
-      n.translate(this.viewWidth / 2), n.perspective(this.perspective), n.translate(-this.viewWidth / 2), n.translate(e, this.yMargin);
-      let h = 0;
-      i > 0.5 && (h = -(i - 0.5) * 2 * 180), r === "left" && (h = -h), t === "back" && (h += 180), h && (n.translate(this.pageWidth), s && n.translate(-this.pageWidth), n.rotateY(h));
+      const h = new x();
+      h.translate(this.viewWidth / 2), h.perspective(this.perspective), h.translate(-this.viewWidth / 2), h.translate(e, this.yMargin);
+      let n = 0;
+      i > 0.5 && (n = -(i - 0.5) * 2 * 180), r === "left" && (n = -n), t === "back" && (n += 180), n && (h.translate(this.pageWidth), s && h.translate(-this.pageWidth), h.rotateY(n));
       let f = i < 0.5 ? i * 2 * Math.PI : (1 - (i - 0.5) * 2) * Math.PI;
       f === 0 && (f = 1e-9);
       const m = this.pageWidth / f;
-      let u = 0;
+      let d = 0;
       const P = f / this.nPolygons;
-      let d = P / 2 / Math.PI * 180;
+      let u = P / 2 / Math.PI * 180;
       const w = P / Math.PI * 180;
-      s && (d = -(f / Math.PI) * 180 + w / 2), t === "back" && (d = -d), this.minX = 1 / 0, this.maxX = -1 / 0;
+      s && (u = -(f / Math.PI) * 180 + w / 2), t === "back" && (u = -u), this.minX = 1 / 0, this.maxX = -1 / 0;
       const c = [];
       for (let l = 0; l < this.nPolygons; l++) {
-        const E = `${l / (this.nPolygons - 1) * 100}% 0px`, y = n.clone(), z = s ? f - u : u;
-        let b = Math.sin(z) * m;
-        s && (b = this.pageWidth - b);
-        let I = (1 - Math.cos(z)) * m;
-        t === "back" && (I = -I), y.translate3d(b, 0, I), y.rotateY(-d);
+        const E = `${l / (this.nPolygons - 1) * 100}% 0px`, y = h.clone(), z = s ? f - d : d;
+        let I = Math.sin(z) * m;
+        s && (I = this.pageWidth - I);
+        let b = (1 - Math.cos(z)) * m;
+        t === "back" && (b = -b), y.translate3d(I, 0, b), y.rotateY(-u);
         const L = y.transformX(0), T = y.transformX(a);
         this.maxX = Math.max(Math.max(L, T), this.maxX), this.minX = Math.min(Math.min(L, T), this.minX);
-        const R = this.computeLighting(h - d, w);
-        u += P, d += w, c.push([`${t}${l}`, o, R, E, y.toString(), Math.abs(Math.round(I))]);
+        const R = this.computeLighting(n - u, w);
+        d += P, u += w, c.push([`${t}${l}`, o, R, E, y.toString(), Math.abs(Math.round(b))]);
       }
       return c;
     },
@@ -370,9 +370,9 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       }
       if (this.gloss > 0 && !this.IE) {
         const s = o.map(
-          (n) => Math.max(
-            Math.cos((t + 30 - i * n) / 180 * Math.PI) ** 200,
-            Math.cos((t - 30 - i * n) / 180 * Math.PI) ** 200
+          (h) => Math.max(
+            Math.cos((t + 30 - i * h) / 180 * Math.PI) ** 200,
+            Math.cos((t - 30 - i * h) / 180 * Math.PI) ** 200
           )
         );
         r.push(`
@@ -425,7 +425,7 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       this.nImageLoad = 0, this.nImageLoadTrigger = t, this.imageLoadCallback = i;
     },
     didLoadImage(t) {
-      this.imageWidth == null && (this.imageWidth = (t.target || t.path[0]).naturalWidth, this.imageHeight = (t.target || t.path[0]).naturalHeight, this.preloadImages()), this.imageLoadCallback && ++this.nImageLoad >= this.nImageLoadTrigger && (this.imageLoadCallback(), this.imageLoadCallback = null);
+      console.log("didLoadImage"), this.imageWidth == null && (this.imageWidth = (t.target || t.path[0]).naturalWidth, this.imageHeight = (t.target || t.path[0]).naturalHeight, console.log(`about to preloadImages with this.imageWidth ${this.imageWidth}`), this.preloadImages()), this.imageLoadCallback && ++this.nImageLoad >= this.nImageLoadTrigger && (console.log("calling imageLoadCallback"), this.imageLoadCallback(), this.imageLoadCallback = null);
     },
     zoomIn(t = null) {
       this.canZoomIn && (this.zoomIndex += 1, this.zoomTo(this.zooms_[this.zoomIndex], t));
@@ -441,13 +441,13 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
         o = i.pageX - c.left, a = i.pageY - c.top;
       } else
         o = r.clientWidth / 2, a = r.clientHeight / 2;
-      const e = this.zoom, s = t, n = r.scrollLeft, h = r.scrollTop, f = o + n, m = a + h, u = f / e * s - o, P = m / e * s - a, d = Date.now();
+      const e = this.zoom, s = t, h = r.scrollLeft, n = r.scrollTop, f = o + h, m = a + n, d = f / e * s - o, P = m / e * s - a, u = Date.now();
       this.zooming = !0, this.$emit("zoom-start", t);
       const w = () => {
         requestAnimationFrame(() => {
-          const c = Date.now() - d;
+          const c = Date.now() - u;
           let l = c / this.zoomDuration;
-          (l > 1 || this.IE) && (l = 1), l = k(l), this.zoom = e + (s - e) * l, this.scrollLeft = n + (u - n) * l, this.scrollTop = h + (P - h) * l, c < this.zoomDuration ? w() : (this.$emit("zoom-end", t), this.zooming = !1, this.zoom = t, this.scrollLeft = u, this.scrollTop = P);
+          (l > 1 || this.IE) && (l = 1), l = k(l), this.zoom = e + (s - e) * l, this.scrollLeft = h + (d - h) * l, this.scrollTop = n + (P - n) * l, c < this.zoomDuration ? w() : (this.$emit("zoom-end", t), this.zooming = !1, this.zoom = t, this.scrollLeft = d, this.scrollTop = P);
         });
       };
       w(), s > 1 && this.preloadImages(!0);
@@ -623,29 +623,29 @@ function it(t, i, r, o, a, e) {
           }, [
             (v(!0), M(G, null, q(e.polygonArray, ([
               s,
-              n,
               h,
+              n,
               f,
               m,
-              u
+              d
             ]) => (v(), M("div", {
-              class: W(["polygon", { blank: !n }]),
+              class: W(["polygon", { blank: !h }]),
               key: s,
               style: g({
-                backgroundImage: n && `url(${e.loadImage(n)})`,
+                backgroundImage: h && `url(${e.loadImage(h)})`,
                 backgroundSize: e.polygonBgSize,
                 backgroundPosition: f,
                 width: e.polygonWidth,
                 height: e.polygonHeight,
                 transform: m,
-                zIndex: u
+                zIndex: d
               })
             }, [
               V(p("div", {
                 class: "lighting",
-                style: g({ backgroundImage: h })
+                style: g({ backgroundImage: n })
               }, null, 4), [
-                [j, h.length]
+                [j, n.length]
               ])
             ], 6))), 128))
           ], 4),
@@ -667,7 +667,7 @@ function it(t, i, r, o, a, e) {
     ], 38)
   ]);
 }
-const D = /* @__PURE__ */ K(_, [["render", it], ["__scopeId", "data-v-08936283"]]);
+const D = /* @__PURE__ */ K(_, [["render", it], ["__scopeId", "data-v-bc84b946"]]);
 window.Vue && window.Vue.component ? Vue.component("flipbook", D) : window.Flipbook = D;
 export {
   D as default
