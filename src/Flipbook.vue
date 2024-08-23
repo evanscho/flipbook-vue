@@ -305,8 +305,10 @@ export default {
       const vw = this.viewWidth / this.displayedPages;
       const xScale = vw / this.imageWidth;
       const yScale = this.viewHeight / this.imageHeight;
-      console.log(`pageScale with viewWidth ${this.viewWidth}, viewHeight ${this.viewHeight}, imageWidth ${this.imageWidth}, imageHeight ${this.imageHeight}`)
-      console.log(`pageScale = ${xScale < yScale ? xScale : yScale}`)
+      console.log(
+        `pageScale with viewWidth ${this.viewWidth}, viewHeight ${this.viewHeight}, imageWidth ${this.imageWidth}, imageHeight ${this.imageHeight}`
+      );
+      console.log(`pageScale = ${xScale < yScale ? xScale : yScale}`);
       const scale = xScale < yScale ? xScale : yScale;
 
       return scale < 1 ? scale : 1;
@@ -336,7 +338,7 @@ export default {
     },
     polygonArray() {
       const array = this.makePolygonArray('front').concat(this.makePolygonArray('back'));
-      console.log('polygonArray', array)
+      console.log('polygonArray', array);
       return array;
     },
     boundingLeft() {
@@ -405,37 +407,73 @@ export default {
       return Math.min(this.scrollTopMax, Math.max(this.scrollTopMin, this.scrollTop));
     },
   },
+  watch: {
+    currentPage() {
+      this.firstPage = this.currentPage;
+      this.secondPage = this.currentPage + 1;
+      this.preloadImages();
+    },
+    centerOffset() {
+      if (this.animatingCenter) {
+        return;
+      }
+
+      const animate = () => {
+        requestAnimationFrame(() => {
+          const rate = 0.1;
+          const diff = this.centerOffset - this.currentCenterOffset;
+          if (Math.abs(diff) < 0.5) {
+            this.currentCenterOffset = this.centerOffset;
+            this.animatingCenter = false;
+          } else {
+            this.currentCenterOffset += diff * rate;
+            animate();
+          }
+        });
+      };
+
+      this.animatingCenter = true;
+      animate();
+    },
+    scrollLeftLimited(val) {
+      if (this.IE) {
+        requestAnimationFrame(() => {
+          this.$refs.viewport.scrollLeft = val;
+        });
+      } else {
+        this.$refs.viewport.scrollLeft = val;
+      }
+    },
+    scrollTopLimited(val) {
+      if (this.IE) {
+        requestAnimationFrame(() => {
+          this.$refs.viewport.scrollTop = val;
+        });
+      } else {
+        this.$refs.viewport.scrollTop = val;
+      }
+    },
+    pages(after, before) {
+      this.fixFirstPage();
+      if (!before?.length && after?.length) {
+        if (this.startPage > 1 && after[0] === null) {
+          this.currentPage += 1;
+        }
+      }
+    },
+    startPage(p) {
+      this.goToPage(p);
+    },
+  },
   mounted() {
     window.addEventListener('resize', this.onResize, { passive: true });
     this.onResize();
-    this.zoom = this.zooms_[0];
+    [this.zoom] = this.zooms_; // equivalent to this.zoom = this.zooms_[0]
     this.goToPage(this.startPage);
   },
 
   beforeUnmount() {
     window.removeEventListener('resize', this.onResize, { passive: true });
-  },
-  watch: {
-    imageWidth(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        console.log(`imageWidth changed from ${oldVal} to ${newVal}`);
-      }
-    },
-    imageHeight(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        console.log(`imageHeight changed from ${oldVal} to ${newVal}`);
-      }
-    },
-    pageWidth(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        console.log(`pageWidth changed from ${oldVal} to ${newVal}`);
-      }
-    },
-    pageHeight(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        console.log(`pageHeight changed from ${oldVal} to ${newVal}`);
-      }
-    },
   },
   methods: {
     onResize() {
