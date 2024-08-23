@@ -1,6 +1,6 @@
 {
-  "name": "flipbook-vue",
-  "version": "1.0.0-beta.4",
+  "name": "flipbook",
+  "version": "1.0.0-beta.5",
   "license": "MIT",
   "description": "3D page flip effect for Vue.js",
   "homepage": "https://ts1.github.io/flipbook-vue/",
@@ -14,49 +14,30 @@
     "page",
     "flip",
     "turn",
-    "3d",
-    "coffeescript",
-    "coffeescript2"
+    "3d"
   ],
-  "module": "dist/flipbook.mjs",
-  "main": "dist/flipbook.cjs.js",
-  "types": "types/flipbook.d.ts",
-  "unpkg": "dist/flipbook.min.js",
+  "type": "module",
+  "main": "./dist/flipbook.umd.js",
+  "module": "./dist/flipbook.js",
+  "browser": "./dist/flipbook.js",
+  "types": "./types/flipbook.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/flipbook.mjs",
-      "require": "./dist/flipbook.cjs.js",
-      "browser": "./dist/flipbook.min.js",
+      "import": "./dist/flipbook.js",
+      "require": "./dist/flipbook.umd.js",
+      "default": "./dist/flipbook.js",
       "types": "./types/flipbook.d.ts"
-    },
-    "./vue2": {
-      "import": "./dist/vue2/flipbook.mjs",
-      "require": "./dist/vue2/flipbook.cjs.js",
-      "browser": "./dist/vue2/flipbook.min.js"
     }
   },
-  "scripts": {
-    "dist": "rollup -c rollup.config.js"
-  },
   "devDependencies": {
-    "@rollup/plugin-buble": "^0.21.3",
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@rollup/plugin-url": "^7.0.0",
-    "@vue/compiler-sfc": "^3.2.37",
-    "autoprefixer": "^10.4.8",
-    "coffeescript": "^2.7.0",
-    "postcss": "^8.4.16",
-    "rollup": "^2.77.3",
-    "rollup-plugin-coffee-script": "^2.0.0",
-    "rollup-plugin-styles": "^4.0.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "rollup-plugin-vue": "^6.0.0",
-    "rollup-plugin-vue2": "npm:rollup-plugin-vue@^5.0.0",
-    "vue-template-compiler": "^2.7.8"
+    "postcss": "*",
+    "autoprefixer": "*",
+    "vite": "*",
+    "@vitejs/plugin-vue": "*",
+    "vite-plugin-css-injected-by-js": "*"
   },
   "peerDependencies": {
-    "vue": ">=2.6.10"
+    "vue": ">=3.4.38"
   },
   "postcss": {
     "plugins": {
@@ -72,6 +53,6 @@
     "types"
   ],
   "dependencies": {
-    "rematrix": "^0.7.2"
+    "rematrix": "*"
   }
 }
