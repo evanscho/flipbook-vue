@@ -159,6 +159,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    doublePage: {
+      type: Boolean,
+      default: false,
+    },
     forwardDirection: {
       validator: (val) => val === 'right' || val === 'left',
       default: 'right',
@@ -459,7 +463,7 @@ export default {
 
       this.viewWidth = viewport.clientWidth;
       this.viewHeight = viewport.clientHeight;
-      this.displayedPages = (this.viewWidth > this.viewHeight && !this.singlePage) ? 2 : 1;
+      this.displayedPages = (this.viewWidth > this.viewHeight && !this.singlePage) || this.doublePage ? 2 : 1;
       if (this.displayedPages === 2) {
         this.currentPage &= ~1;
       }

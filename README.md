@@ -128,6 +128,11 @@ Defaults to 10.
 Force single page mode regardless of viewport size.
 Defaults to false.
 
+### `doublePage`
+
+Force double page mode regardless of viewport size.
+Defaults to false.
+
 ### `forwardDirection`
 
 Reading direction.
@@ -252,7 +257,7 @@ You may need to specify the size of view port in your style sheet, directly to
 `<flipbook>` element, or to `.viewport` sub-element of flipbook.
 
 If the size is horizontally long and `singlePage` prop is `false` (default), it displays two pages spread, suitable for desktop browsers.
-If it's vertically long, it displays single pages, suitable for smartphones.
+If it's vertically long and `doublePage` prop is `false` (default), it displays single pages, suitable for smartphones.
 
 There are some internal classes.
 
