@@ -570,9 +570,9 @@ export default {
       }
 
       if (pageRotation) {
-        pageMatrix.translate(this.pageWidth);
-        if (originRight) pageMatrix.translate(-this.pageWidth);
-        pageMatrix.rotateY(pageRotation);
+          if (originRight) { pageMatrix.translate(this.pageWidth); }
+          pageMatrix.rotateY(pageRotation);
+          if (originRight) { pageMatrix.translate(-this.pageWidth); }
       }
       console.log(`pageMatrix post-rotation: ${pageMatrix.toString()}`);
 

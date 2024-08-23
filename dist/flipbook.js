@@ -1,4 +1,4 @@
-(function(){"use strict";try{if(typeof document<"u"){var e=document.createElement("style");e.appendChild(document.createTextNode(".viewport[data-v-a2315b68]{-webkit-overflow-scrolling:touch;width:100%;height:100%}.viewport.zoom[data-v-a2315b68]{overflow:scroll}.viewport.zoom.drag-to-scroll[data-v-a2315b68]{overflow:hidden}.flipbook-container[data-v-a2315b68]{position:relative;width:100%;height:100%;transform-origin:top left;-webkit-user-select:none;user-select:none}.click-to-flip[data-v-a2315b68]{position:absolute;width:50%;height:100%;top:0;-webkit-user-select:none;user-select:none}.click-to-flip.left[data-v-a2315b68]{left:0}.click-to-flip.right[data-v-a2315b68]{right:0}.bounding-box[data-v-a2315b68]{position:absolute;-webkit-user-select:none;user-select:none}.page[data-v-a2315b68]{position:absolute;backface-visibility:hidden}.polygon[data-v-a2315b68]{position:absolute;top:0;left:0;background-repeat:no-repeat;backface-visibility:hidden;transform-origin:center left}.polygon.blank[data-v-a2315b68]{background-color:#ddd}.polygon .lighting[data-v-a2315b68]{width:100%;height:100%}")),document.head.appendChild(e)}}catch(t){console.error("vite-plugin-css-injected-by-js",t)}})();
+(function(){"use strict";try{if(typeof document<"u"){var e=document.createElement("style");e.appendChild(document.createTextNode(".viewport[data-v-2f29e5e1]{-webkit-overflow-scrolling:touch;width:100%;height:100%}.viewport.zoom[data-v-2f29e5e1]{overflow:scroll}.viewport.zoom.drag-to-scroll[data-v-2f29e5e1]{overflow:hidden}.flipbook-container[data-v-2f29e5e1]{position:relative;width:100%;height:100%;transform-origin:top left;-webkit-user-select:none;user-select:none}.click-to-flip[data-v-2f29e5e1]{position:absolute;width:50%;height:100%;top:0;-webkit-user-select:none;user-select:none}.click-to-flip.left[data-v-2f29e5e1]{left:0}.click-to-flip.right[data-v-2f29e5e1]{right:0}.bounding-box[data-v-2f29e5e1]{position:absolute;-webkit-user-select:none;user-select:none}.page[data-v-2f29e5e1]{position:absolute;backface-visibility:hidden}.polygon[data-v-2f29e5e1]{position:absolute;top:0;left:0;background-repeat:no-repeat;backface-visibility:hidden;transform-origin:center left}.polygon.blank[data-v-2f29e5e1]{background-color:#ddd}.polygon .lighting[data-v-2f29e5e1]{width:100%;height:100%}")),document.head.appendChild(e)}}catch(t){console.error("vite-plugin-css-injected-by-js",t)}})();
 import { identity as O, multiply as R, perspective as C, translate as H, translate3d as U, rotateY as A, toString as Y } from "rematrix";
 import { openBlock as M, createElementBlock as v, renderSlot as B, normalizeProps as Z, guardReactiveProps as N, createElementVNode as p, normalizeClass as S, normalizeStyle as f, createCommentVNode as W, Fragment as q, renderList as G, withDirectives as V, vShow as j } from "vue";
 /*!
@@ -7,12 +7,12 @@ import { openBlock as M, createElementBlock as v, renderSlot as B, normalizeProp
  * Copyright © 2024 Takeshi Sone.
  * Released under the MIT License.
  */
-class b {
+class z {
   constructor(i) {
     i ? i.m ? this.m = [...i.m] : this.m = [...i] : this.m = O();
   }
   clone() {
-    return new b(this);
+    return new z(this);
   }
   multiply(i) {
     this.m = R(this.m, i);
@@ -357,10 +357,10 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       console.log(`makePolygonArray with image ${o} and polygonWidth ${a}`);
       let e = this.xMargin, s = !1;
       this.displayedPages === 1 ? this.forwardDirection === "right" ? t === "back" && (s = !0, e = this.xMargin - this.pageWidth) : r === "left" ? t === "back" ? e = this.pageWidth - this.xMargin : s = !0 : t === "front" ? e = this.pageWidth - this.xMargin : s = !0 : r === "left" ? t === "back" ? e = this.viewWidth / 2 : s = !0 : t === "front" ? e = this.viewWidth / 2 : s = !0;
-      const n = new b();
+      const n = new z();
       console.log(`pageMatrix pre-translation: ${n.toString()}`), n.translate(this.viewWidth / 2), n.perspective(this.perspective), n.translate(-this.viewWidth / 2), n.translate(e, this.yMargin), console.log(`pageMatrix post-translation: ${n.toString()}`);
       let h = 0;
-      i > 0.5 && (h = -(i - 0.5) * 2 * 180), r === "left" && (h = -h), t === "back" && (h += 180), h && (n.translate(this.pageWidth), s && n.translate(-this.pageWidth), n.rotateY(h)), console.log(`pageMatrix post-rotation: ${n.toString()}`);
+      i > 0.5 && (h = -(i - 0.5) * 2 * 180), r === "left" && (h = -h), t === "back" && (h += 180), h && (s && n.translate(this.pageWidth), n.rotateY(h), s && n.translate(-this.pageWidth)), console.log(`pageMatrix post-rotation: ${n.toString()}`);
       let g = i < 0.5 ? i * 2 * Math.PI : (1 - (i - 0.5) * 2) * Math.PI;
       g === 0 && (g = 1e-9);
       const m = this.pageWidth / g;
@@ -372,10 +372,10 @@ const J = "data:image/svg+xml,%3c?xml%20version='1.0'?%3e%3csvg%20xmlns='http://
       const d = [];
       console.log("pageMatrix loop start"), console.log(`params: ${this.nPolygons}, ${g}, ${m}, ${u}, ${P}, ${c}, ${y}, ${s}, ${t}, ${a}, ${h}, ${this.pageWidth}`), console.log(`pre: this.maxX: ${this.maxX}, this.minX: ${this.minX}`), console.log(`pageMatrix pre: ${n.toString()}`);
       for (let l = 0; l < this.nPolygons; l += 1) {
-        const E = `${l / (this.nPolygons - 1) * 100}% 0px`, w = n.clone(), z = s ? g - u : u;
-        let I = Math.sin(z) * m;
+        const E = `${l / (this.nPolygons - 1) * 100}% 0px`, w = n.clone(), b = s ? g - u : u;
+        let I = Math.sin(b) * m;
         s && (I = this.pageWidth - I);
-        let x = (1 - Math.cos(z)) * m;
+        let x = (1 - Math.cos(b)) * m;
         t === "back" && (x = -x), w.translate3d(I, 0, x), w.rotateY(-c);
         const L = w.transformX(0), T = w.transformX(a);
         this.maxX = Math.max(Math.max(L, T), this.maxX), this.minX = Math.min(Math.min(L, T), this.minX), console.log(`post iteration ${l}: this.maxX: ${this.maxX}, this.minX: ${this.minX}`);
@@ -679,7 +679,7 @@ function it(t, i, r, o, a, e) {
     ], 38)
   ]);
 }
-const X = /* @__PURE__ */ K($, [["render", it], ["__scopeId", "data-v-a2315b68"]]);
+const X = /* @__PURE__ */ K($, [["render", it], ["__scopeId", "data-v-2f29e5e1"]]);
 window.Vue && window.Vue.component ? Vue.component("flipbook", X) : window.Flipbook = X;
 export {
   X as default
