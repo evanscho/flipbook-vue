@@ -517,7 +517,6 @@ export default {
 
       const image = face === 'front' ? this.flip.frontImage : this.flip.backImage;
       const polygonWidth = this.pageWidth / this.nPolygons;
-      console.log(`makePolygonArray with image ${image} and polygonWidth ${polygonWidth}`);
 
       let pageX = this.xMargin;
       let originRight = false;
@@ -551,12 +550,10 @@ export default {
       }
 
       const pageMatrix = new Matrix();
-      console.log(`pageMatrix pre-translation: ${pageMatrix.toString()}`);
       pageMatrix.translate(this.viewWidth / 2);
       pageMatrix.perspective(this.perspective);
       pageMatrix.translate(-this.viewWidth / 2);
       pageMatrix.translate(pageX, this.yMargin);
-      console.log(`pageMatrix post-translation: ${pageMatrix.toString()}`);
 
       let pageRotation = 0;
       if (progress > 0.5) {
@@ -574,7 +571,6 @@ export default {
           pageMatrix.rotateY(pageRotation);
           if (originRight) { pageMatrix.translate(-this.pageWidth); }
       }
-      console.log(`pageMatrix post-rotation: ${pageMatrix.toString()}`);
 
       let theta = progress < 0.5 ? progress * 2 * Math.PI : (1 - (progress - 0.5) * 2) * Math.PI;
       if (theta === 0) theta = 1e-9;
@@ -596,11 +592,6 @@ export default {
       this.minX = Infinity;
       this.maxX = -Infinity;
       const polygons = [];
-
-      console.log('pageMatrix loop start');
-      console.log(`params: ${this.nPolygons}, ${theta}, ${radius}, ${radian}, ${dRadian}, ${rotate}, ${dRotate}, ${originRight}, ${face}, ${polygonWidth}, ${pageRotation}, ${this.pageWidth}`);
-      console.log(`pre: this.maxX: ${this.maxX}, this.minX: ${this.minX}`);
-      console.log(`pageMatrix pre: ${pageMatrix.toString()}`);
       for (let i = 0; i < this.nPolygons; i += 1) {
         const bgPos = `${(i / (this.nPolygons - 1)) * 100}% 0px`;
 
@@ -618,7 +609,6 @@ export default {
         const x1 = m.transformX(polygonWidth);
         this.maxX = Math.max(Math.max(x0, x1), this.maxX);
         this.minX = Math.min(Math.min(x0, x1), this.minX);
-        console.log(`post iteration ${i}: this.maxX: ${this.maxX}, this.minX: ${this.minX}`);
 
         const lighting = this.computeLighting(pageRotation - rotate, dRotate);
 
