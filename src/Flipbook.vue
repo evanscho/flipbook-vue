@@ -517,6 +517,7 @@ export default {
 
       const image = face === 'front' ? this.flip.frontImage : this.flip.backImage;
       const polygonWidth = this.pageWidth / this.nPolygons;
+      console.log(`makePolygonArray with image ${image} and polygonWidth ${polygonWidth}`);
 
       let pageX = this.xMargin;
       let originRight = false;
@@ -550,10 +551,12 @@ export default {
       }
 
       const pageMatrix = new Matrix();
+      console.log(`pageMatrix pre-translation: ${pageMatrix.toString()}`);
       pageMatrix.translate(this.viewWidth / 2);
       pageMatrix.perspective(this.perspective);
       pageMatrix.translate(-this.viewWidth / 2);
       pageMatrix.translate(pageX, this.yMargin);
+      console.log(`pageMatrix post-translation: ${pageMatrix.toString()}`);
 
       let pageRotation = 0;
       if (progress > 0.5) {
@@ -571,6 +574,7 @@ export default {
         if (originRight) pageMatrix.translate(-this.pageWidth);
         pageMatrix.rotateY(pageRotation);
       }
+      console.log(`pageMatrix post-rotation: ${pageMatrix.toString()}`);
 
       let theta = progress < 0.5 ? progress * 2 * Math.PI : (1 - (progress - 0.5) * 2) * Math.PI;
       if (theta === 0) theta = 1e-9;
