@@ -593,6 +593,10 @@ export default {
       this.maxX = -Infinity;
       const polygons = [];
 
+      console.log('pageMatrix loop start');
+      console.log(`params: ${this.nPolygons}, ${theta}, ${radius}, ${radian}, ${dRadian}, ${rotate}, ${dRotate}, ${originRight}, ${face}, ${polygonWidth}, ${pageRotation}, ${this.pageWidth}`);
+      console.log(`pre: this.maxX: ${this.maxX}, this.minX: ${this.minX}`);
+      console.log(`pageMatrix pre: ${pageMatrix.toString()}`);
       for (let i = 0; i < this.nPolygons; i += 1) {
         const bgPos = `${(i / (this.nPolygons - 1)) * 100}% 0px`;
 
@@ -610,6 +614,7 @@ export default {
         const x1 = m.transformX(polygonWidth);
         this.maxX = Math.max(Math.max(x0, x1), this.maxX);
         this.minX = Math.min(Math.min(x0, x1), this.minX);
+        console.log(`post iteration ${i}: this.maxX: ${this.maxX}, this.minX: ${this.minX}`);
 
         const lighting = this.computeLighting(pageRotation - rotate, dRotate);
 
