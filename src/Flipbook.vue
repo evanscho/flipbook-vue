@@ -47,7 +47,6 @@
             }"
             :src="pageUrlLoading(leftPage, true)"
             @load="didLoadImage($event)"
-            @error="imageFailedToLoad($event)"
           />
           <img
             v-if="showRightPage"
@@ -60,7 +59,6 @@
             }"
             :src="pageUrlLoading(rightPage, true)"
             @load="didLoadImage($event)"
-            @error="imageFailedToLoad($event)"
           />
 
           <div :style="{ opacity: flip.opacity }">
@@ -267,12 +265,6 @@ export default {
       return !this.flip.direction && this.currentPage < this.pages.length - this.displayedPages;
     },
     canGoBack() {
-      if (!this.flip.direction && this.currentPage >= this.displayedPages && this.displayedPages === 1) {
-        console.log(`canGoBack and will call pageUrl with ${this.firstPage - 1}`);
-      } else {
-        console.log(`canGoBack and won't call pageUrl`);
-      }
-
       return (
         !this.flip.direction &&
         this.currentPage >= this.displayedPages &&
@@ -286,11 +278,9 @@ export default {
       return this.forwardDirection === 'left' ? this.firstPage : this.secondPage;
     },
     showLeftPage() {
-      console.log(`showLeftPage with leftPage ${this.leftPage}`);
       return this.pageUrl(this.leftPage);
     },
     showRightPage() {
-      console.log(`showRightPage with rightPage ${this.rightPage}`);
       return this.pageUrl(this.rightPage) && this.displayedPages === 2;
     },
     cursor() {
@@ -305,10 +295,6 @@ export default {
       const vw = this.viewWidth / this.displayedPages;
       const xScale = vw / this.imageWidth;
       const yScale = this.viewHeight / this.imageHeight;
-      console.log(
-        `pageScale with viewWidth ${this.viewWidth}, viewHeight ${this.viewHeight}, imageWidth ${this.imageWidth}, imageHeight ${this.imageHeight}`
-      );
-      console.log(`pageScale = ${xScale < yScale ? xScale : yScale}`);
       const scale = xScale < yScale ? xScale : yScale;
 
       return scale < 1 ? scale : 1;
@@ -338,24 +324,19 @@ export default {
     },
     polygonArray() {
       const array = this.makePolygonArray('front').concat(this.makePolygonArray('back'));
-      console.log('polygonArray', array);
       return array;
     },
     boundingLeft() {
-      console.log('boundingLeft');
       if (this.displayedPages === 1) {
         return this.xMargin;
       }
-      console.log('in boundingLeft, about to call pageUrl');
       const x = this.pageUrl(this.leftPage) ? this.xMargin : this.viewWidth / 2;
       return x < this.minX ? x : this.minX;
     },
     boundingRight() {
-      console.log('boundingRight');
       if (this.displayedPages === 1) {
         return this.viewWidth - this.xMargin;
       }
-      console.log('in boundingLeft, about to call pageUrl');
       const x = this.pageUrl(this.rightPage) ? this.viewWidth - this.xMargin : this.viewWidth / 2;
       return x > this.maxX ? x : this.maxX;
     },
@@ -491,31 +472,21 @@ export default {
       this.maxX = -Infinity;
     },
     fixFirstPage() {
-      if (this.displayedPages === 1 && this.currentPage === 0 && this.pages.length) {
-        console.log(`in fixFirstPage and will call pageUrl[0]`);
-      } else {
-        console.log(`in fixFirstPage and won't call pageUrl[0]`);
-      }
-
       if (this.displayedPages === 1 && this.currentPage === 0 && this.pages.length && !this.pageUrl(0)) {
         this.currentPage += 1;
       }
     },
     pageUrl(page, hiRes = false) {
-      console.log(`pageUrl of ${page} with hiRes ${hiRes}`);
       if (hiRes && this.zoom > 1 && !this.zooming) {
         const url = this.pagesHiRes[page];
         if (url) return url;
       }
-      console.log(`this.pages[page] is ${this.pages[page]}`);
+      
       return this.pages[page] || null;
     },
     pageUrlLoading(page, hiRes = false) {
-      console.log(`pageUrlLoading and about to call pageUrl with page ${page} and hiRes ${hiRes}`);
       const url = this.pageUrl(page, hiRes);
-      console.log(`pageUrlLoading: url is ${url}`);
       if (hiRes && this.zoom > 1 && !this.zooming) return url;
-      console.log(`pageUrlLoading: about to loadImage with url ${url}`);
       if (url) {
         return this.loadImage(url);
       }
@@ -689,7 +660,6 @@ export default {
     },
 
     flipStart(direction, auto) {
-      console.log(`flipStart, will call pageUrl with ${this.currentPage}`);
       if (direction !== this.forwardDirection) {
         if (this.displayedPages === 1) {
           this.flip.frontImage = this.pageUrl(this.currentPage - 1);
@@ -798,23 +768,16 @@ export default {
     },
 
     didLoadImage(ev) {
-      console.log('didLoadImage');
       if (this.imageWidth == null) {
         this.imageWidth = (ev.target || ev.path[0]).naturalWidth;
         this.imageHeight = (ev.target || ev.path[0]).naturalHeight;
-        console.log(`about to preloadImages with this.imageWidth ${this.imageWidth}`);
         this.preloadImages();
       }
       if (!this.imageLoadCallback) return;
       if (++this.nImageLoad >= this.nImageLoadTrigger) {
-        console.log('calling imageLoadCallback');
         this.imageLoadCallback();
         this.imageLoadCallback = null;
       }
-    },
-
-    imageFailedToLoad(ev) {
-      console.error('Failed to load image', ev);
     },
 
     zoomIn(zoomAt = null) {
@@ -1027,8 +990,6 @@ export default {
     },
 
     preloadImages(hiRes = false) {
-      console.log(`preloadImages with hiRes ${hiRes}`);
-      console.log('this.currentPage', this.currentPage);
       for (let i = this.currentPage - 3; i <= this.currentPage + 3; i++) {
         this.pageUrlLoading(i); // This preloads image
       }
@@ -1044,8 +1005,6 @@ export default {
     },
 
     goToPage(p) {
-      console.log(`goToPage with p ${p} and this.page ${this.page}`);
-      console.log('this.pages', this.pages);
       if (p == null || p === this.page) return;
       if (this.pages[0] == null) {
         if (this.displayedPages === 2 && p === 1) {
@@ -1062,10 +1021,6 @@ export default {
     },
 
     loadImage(url) {
-      console.log(
-        `loadImage of ${url} with imageWidth ${this.imageWidth}, loadedImages[url] ${this.loadedImages[url]}`
-      );
-      console.log('loadedImages', this.loadedImages);
       if (this.imageWidth == null) {
         return url;
       }
