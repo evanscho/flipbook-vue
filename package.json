@@ -17,14 +17,14 @@
     "3d"
   ],
   "type": "module",
-  "main": "./dist/flipbook.umd.js",
+  "main": "./dist/flipbook.umd.cjs",
   "module": "./dist/flipbook.js",
   "browser": "./dist/flipbook.js",
   "types": "./types/flipbook.d.ts",
   "exports": {
     ".": {
       "import": "./dist/flipbook.js",
-      "require": "./dist/flipbook.umd.js",
+      "require": "./dist/flipbook.umd.cjs",
       "default": "./dist/flipbook.js",
       "types": "./types/flipbook.d.ts"
     }
