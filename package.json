@@ -1,6 +1,6 @@
 {
   "name": "flipbook",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "license": "MIT",
   "description": "3D page flip effect for Vue.js",
   "homepage": "https://ts1.github.io/flipbook-vue/",
@@ -22,23 +22,24 @@
   "browser": "./dist/flipbook.js",
   "types": "./types/flipbook.d.ts",
   "scripts": {
+    "build": "vite build",
     "dev": "vite",
-    "build": "vite build"
+    "preview": "vite preview"
   },
   "exports": {
     ".": {
+      "types": "./types/flipbook.d.ts",
       "import": "./dist/flipbook.js",
       "require": "./dist/flipbook.umd.cjs",
-      "default": "./dist/flipbook.js",
-      "types": "./types/flipbook.d.ts"
+      "default": "./dist/flipbook.js"
     }
   },
   "devDependencies": {
-    "postcss": "*",
-    "autoprefixer": "*",
-    "vite": "*",
-    "@vitejs/plugin-vue": "*",
-    "vite-plugin-css-injected-by-js": "*"
+    "@vitejs/plugin-vue": "^5.1.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "vite": "^5.4.2",
+    "vite-plugin-css-injected-by-js": "^3.5.1"
   },
   "peerDependencies": {
     "vue": ">=3.4.38"
@@ -54,9 +55,10 @@
   ],
   "files": [
     "dist",
-    "types"
+    "types",
+    "README.md"
   ],
   "dependencies": {
-    "rematrix": "*"
+    "rematrix": "^0.7.2"
   }
 }

@@ -27,7 +27,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/wrapper.js'),
       name: 'Flipbook',
-      fileName: 'flipbook',
+      fileName: (format) => `flipbook.${format === 'es' ? 'js' : 'umd.cjs'}`,
+      formats: ['es', 'umd']
     },
     rollupOptions: {
       external: ['vue', 'rematrix'],

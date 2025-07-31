@@ -603,7 +603,7 @@ export default {
       let radian = 0;
       const dRadian = theta / this.nPolygons;
       let rotate = (dRadian / 2 / Math.PI) * 180;
-      const dRotate = (dRadian / Math.PI) * 180;
+      let dRotate = (dRadian / Math.PI) * 180;
 
       if (originRight) {
         rotate = -(theta / Math.PI) * 180 + dRotate / 2;
@@ -611,6 +611,7 @@ export default {
 
       if (face === 'back') {
         rotate = -rotate;
+        dRotate = -dRotate;
       }
 
       let minX = Infinity;
