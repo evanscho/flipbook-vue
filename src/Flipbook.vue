@@ -192,7 +192,12 @@ export default {
       default: 'scroll',
     },
   },
-  emits: ['zoom-start', 'zoom-end'],
+  emits: ['flip-left-start',
+    'flip-left-end',
+    'flip-right-start',
+    'flip-right-end',
+    'zoom-start',
+    'zoom-end',],
   data() {
     return {
       viewWidth: 0,
@@ -215,6 +220,7 @@ export default {
       activeCursor: null,
       hasTouchEvents: false,
       hasPointerEvents: false,
+      isFlipping: false,
       minX: Infinity,
       maxX: -Infinity,
       preloadedImages: {},
@@ -323,21 +329,31 @@ export default {
       return `${this.pageWidth}px ${this.pageHeight}px`;
     },
     polygonArray() {
-      const array = this.makePolygonArray('front').concat(this.makePolygonArray('back'));
-      return array;
+      const front = this.makePolygonArray('front');
+      const back = this.makePolygonArray('back');
+      
+      return front.polygons.concat(back.polygons);
+    },
+    hasLeftPageUrl() {
+      
+      return this.pageUrl(this.leftPage) !== null;
+    },
+    hasRightPageUrl() {
+      
+      return this.pageUrl(this.rightPage) !== null;
     },
     boundingLeft() {
       if (this.displayedPages === 1) {
         return this.xMargin;
       }
-      const x = this.pageUrl(this.leftPage) ? this.xMargin : this.viewWidth / 2;
+      const x = this.hasLeftPageUrl ? this.xMargin : this.viewWidth / 2;
       return x < this.minX ? x : this.minX;
     },
     boundingRight() {
       if (this.displayedPages === 1) {
         return this.viewWidth - this.xMargin;
       }
-      const x = this.pageUrl(this.rightPage) ? this.viewWidth - this.xMargin : this.viewWidth / 2;
+      const x = this.hasRightPageUrl ? this.viewWidth - this.xMargin : this.viewWidth / 2;
       return x > this.maxX ? x : this.maxX;
     },
     centerOffset() {
@@ -389,6 +405,14 @@ export default {
     },
   },
   watch: {
+    polygonArray() {
+      const front = this.makePolygonArray('front');
+      const back = this.makePolygonArray('back');
+      
+      this.minX = Math.min(front.minX, back.minX);
+      this.maxX = Math.max(front.maxX, back.maxX);
+      this.flip.opacity = Math.min(front.flipOpacity, back.flipOpacity);
+    },
     currentPage() {
       this.firstPage = this.currentPage;
       this.secondPage = this.currentPage + 1;
@@ -503,7 +527,7 @@ export default {
       this.flipStart('right', true);
     },
     makePolygonArray(face) {
-      if (!this.flip.direction) return [];
+      if (!this.flip.direction) return { polygons: [], minX: Infinity, maxX: -Infinity };
 
       let { progress } = this.flip;
       let { direction } = this.flip;
@@ -513,7 +537,7 @@ export default {
         direction = this.forwardDirection;
       }
 
-      this.flip.opacity = this.displayedPages === 1 && progress > 0.7 ? 1 - (progress - 0.7) / 0.3 : 1;
+      const flipOpacity = this.displayedPages === 1 && progress > 0.7 ? 1 - (progress - 0.7) / 0.3 : 1;
 
       const image = face === 'front' ? this.flip.frontImage : this.flip.backImage;
       const polygonWidth = this.pageWidth / this.nPolygons;
@@ -589,8 +613,8 @@ export default {
         rotate = -rotate;
       }
 
-      this.minX = Infinity;
-      this.maxX = -Infinity;
+      let minX = Infinity;
+      let maxX = -Infinity;
       const polygons = [];
       for (let i = 0; i < this.nPolygons; i += 1) {
         const bgPos = `${(i / (this.nPolygons - 1)) * 100}% 0px`;
@@ -607,8 +631,9 @@ export default {
 
         const x0 = m.transformX(0);
         const x1 = m.transformX(polygonWidth);
-        this.maxX = Math.max(Math.max(x0, x1), this.maxX);
-        this.minX = Math.min(Math.min(x0, x1), this.minX);
+        
+        maxX = Math.max(Math.max(x0, x1), maxX);
+        minX = Math.min(Math.min(x0, x1), minX);
 
         const lighting = this.computeLighting(pageRotation - rotate, dRotate);
 
@@ -618,7 +643,7 @@ export default {
         polygons.push([`${face}${i}`, image, lighting, bgPos, m.toString(), Math.abs(Math.round(z))]);
       }
 
-      return polygons;
+      return { polygons, minX, maxX, flipOpacity };
     },
     computeLighting(rot, dRotate) {
       const gradients = [];
@@ -659,6 +684,10 @@ export default {
     },
 
     flipStart(direction, auto) {
+      if (this.isFlipping) {
+        return;
+      }
+      this.isFlipping = true;
       if (direction !== this.forwardDirection) {
         if (this.displayedPages === 1) {
           this.flip.frontImage = this.pageUrl(this.currentPage - 1);
@@ -691,21 +720,35 @@ export default {
           if (auto) this.flipAuto(true);
         });
       });
+      this.isFlipping = false;
     },
 
     flipAuto(ease) {
       const t0 = Date.now();
       const duration = this.flipDuration * (1 - this.flip.progress);
       const startRatio = this.flip.progress;
+
+      if (this.flip.auto) {
+        return;
+      }
       this.flip.auto = true;
       this.$emit(`flip-${this.flip.direction}-start`, this.page);
 
+      let lastUpdateTime = 0;
+      const minInterval = 1000 / 60;
+
       const animate = () => {
         requestAnimationFrame(() => {
-          const t = Date.now() - t0;
+          const now = Date.now();
+          const t = now - t0;
           let ratio = startRatio + t / duration;
           if (ratio > 1) ratio = 1;
-          this.flip.progress = ease ? easeInOut(ratio) : ratio;
+          const progress = ease ? easeInOut(ratio) : ratio;
+
+          if (now - lastUpdateTime >= minInterval || ratio >= 1) {
+            lastUpdateTime = now;
+            this.flip.progress = progress;
+          }
           if (ratio < 1) {
             animate();
           } else {

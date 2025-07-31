@@ -21,6 +21,10 @@
   "module": "./dist/flipbook.js",
   "browser": "./dist/flipbook.js",
   "types": "./types/flipbook.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
   "exports": {
     ".": {
       "import": "./dist/flipbook.js",
