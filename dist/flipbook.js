@@ -3,7 +3,7 @@ import { identity as H, multiply as U, perspective as A, translate as Y, transla
 import { openBlock as M, createElementBlock as v, renderSlot as q, normalizeProps as G, guardReactiveProps as V, createElementVNode as p, normalizeClass as F, normalizeStyle as c, createCommentVNode as X, Fragment as j, renderList as J, withDirectives as K, vShow as Q } from "vue";
 /*!
  * @license
- * flipbook v1.0.0-beta.6
+ * flipbook v1.0.0-beta.7
  * Copyright © 2025 Takeshi Sone.
  * Released under the MIT License.
  */

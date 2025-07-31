@@ -47,6 +47,7 @@
             }"
             :src="pageUrlLoading(leftPage, true)"
             @load="didLoadImage($event)"
+            :alt='alt'
           />
           <img
             v-if="showRightPage"
@@ -59,6 +60,7 @@
             }"
             :src="pageUrlLoading(rightPage, true)"
             @load="didLoadImage($event)"
+            :alt='alt'
           />
 
           <div :style="{ opacity: flip.opacity }">
@@ -190,6 +192,10 @@ export default {
     wheel: {
       type: String,
       default: 'scroll',
+    },
+    alt: {
+      type: String,
+      default: '',
     },
   },
   emits: ['flip-left-start',
@@ -409,8 +415,8 @@ export default {
       const front = this.makePolygonArray('front');
       const back = this.makePolygonArray('back');
       
-      this.minX = Math.min(front.minX, back.minX);
-      this.maxX = Math.max(front.maxX, back.maxX);
+      this.minX = Math.min(front.minX || Infinity, back.minX || Infinity);
+      this.maxX = Math.max(front.maxX || -Infinity, back.maxX || -Infinity);
       this.flip.opacity = Math.min(front.flipOpacity, back.flipOpacity);
     },
     currentPage() {
@@ -473,7 +479,7 @@ export default {
   mounted() {
     window.addEventListener('resize', this.onResize, { passive: true });
     this.onResize();
-    [this.zoom] = this.zooms_; // equivalent to this.zoom = this.zooms_[0]
+    this.zoom = this.zooms_[0];
     this.goToPage(this.startPage);
   },
 
@@ -511,12 +517,7 @@ export default {
     pageUrlLoading(page, hiRes = false) {
       const url = this.pageUrl(page, hiRes);
       if (hiRes && this.zoom > 1 && !this.zooming) return url;
-      if (url) {
-        return this.loadImage(url);
-      }
-      return null;
-
-      // return url && this.loadImage(url);
+      return url && this.loadImage(url);
     },
     flipLeft() {
       if (!this.canFlipLeft) return;
@@ -632,7 +633,7 @@ export default {
 
         const x0 = m.transformX(0);
         const x1 = m.transformX(polygonWidth);
-        
+
         maxX = Math.max(Math.max(x0, x1), maxX);
         minX = Math.min(Math.min(x0, x1), minX);
 
